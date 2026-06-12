@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Les Mots — учим французские слова</title>
+<meta name="description" content="Мини-игра для запоминания французских слов: открывай карточки и подбирай перевод.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Nunito:ital,wght@0,400;0,600;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bleu:#2B4ACB;          /* французский синий — основной */
+    --bleu-deep:#1E338F;
+    --ciel:#EEF2FF;          /* фон — светлое «небо» */
+    --card:#FFFFFF;
+    --ink:#27304A;
+    --ink-soft:#6B7390;
+    --gris:#E4E7F2;          /* закрытая карточка */
+    --vert:#2F9E44;          /* правильно */
+    --vert-bg:#E6F6EA;
+    --rouge:#E03131;         /* ошибка */
+    --rouge-bg:#FDEAEA;
+    --soleil:#FFB703;        /* тёплый акцент */
+    --radius:16px;
+    --shadow:0 2px 10px rgba(39,48,74,.08);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:var(--ciel);
+    color:var(--ink);
+    min-height:100dvh;
+    line-height:1.45;
+  }
+  .app{max-width:640px;margin:0 auto;padding:16px 16px calc(24px + env(safe-area-inset-bottom));}
+  h1,h2,.btn,.chip-level{font-family:'Comfortaa',cursive}
+
+  /* ---------- общие элементы ---------- */
+  .screen{display:none;animation:fadeIn .25s ease}
+  .screen.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    min-height:52px;padding:12px 24px;width:100%;
+    border:none;border-radius:999px;cursor:pointer;
+    font-size:17px;font-weight:700;color:#fff;background:var(--bleu);
+    box-shadow:0 4px 0 var(--bleu-deep);
+    transition:transform .08s ease, box-shadow .08s ease, background .15s;
+  }
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--bleu-deep)}
+  .btn.secondary{background:#fff;color:var(--bleu);box-shadow:inset 0 0 0 2px var(--bleu)}
+  .btn.secondary:active{transform:translateY(1px)}
+  .btn + .btn{margin-top:12px}
+  .btn:focus-visible,.speaker:focus-visible,.theme-card:focus-visible,.card:focus-visible,.trans:focus-visible{
+    outline:3px solid var(--soleil);outline-offset:2px;
+  }
+
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .back{
+    flex:0 0 auto;width:44px;height:44px;border-radius:12px;border:none;cursor:pointer;
+    background:#fff;color:var(--bleu);font-size:20px;box-shadow:var(--shadow);
+  }
+  .topbar .title{font-family:'Comfortaa',cursive;font-weight:700;font-size:18px}
+
+  /* ---------- Экран 1: Home ---------- */
+  .hero{text-align:center;padding:28px 0 10px}
+  .hero .roof{font-size:44px;line-height:1}
+  .hero h1{font-size:32px;margin:8px 0 2px;color:var(--bleu)}
+  .hero h1 .accent{color:var(--rouge)}
+  .hero p{margin:0 0 4px;color:var(--ink-soft);font-size:16px}
+
+  .section-label{
+    font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);margin:22px 0 10px;
+  }
+  .chip-level{
+    display:inline-block;padding:10px 18px;border-radius:999px;font-size:15px;font-weight:700;
+    background:var(--bleu);color:#fff;
+  }
+  .themes{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+  .theme-card{
+    display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+    background:var(--card);border:none;border-radius:var(--radius);padding:14px 16px;
+    box-shadow:var(--shadow);cursor:pointer;font-family:'Nunito',sans-serif;
+    transition:transform .08s ease;
+  }
+  .theme-card:not(.locked):active{transform:scale(.985)}
+  .theme-card .emoji{font-size:30px}
+  .theme-card .t-fr{font-weight:800;font-size:17px;color:var(--ink)}
+  .theme-card .t-ru{color:var(--ink-soft);font-size:14px}
+  .theme-card .go{margin-left:auto;color:var(--bleu);font-size:20px;font-weight:800}
+  .theme-card.locked{opacity:.55;cursor:default}
+  .theme-card.locked .soon{
+    margin-left:auto;font-size:12px;font-weight:800;color:var(--ink-soft);
+    background:var(--gris);border-radius:999px;padding:4px 10px;
+  }
+
+  /* ---------- Экран 2: список слов ---------- */
+  .wordlist{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:8px}
+  .wordlist li{
+    display:flex;align-items:center;gap:12px;background:var(--card);
+    border-radius:14px;padding:10px 14px;box-shadow:var(--shadow);
+  }
+  .speaker{
+    flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--ciel);color:var(--bleu);font-size:18px;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;
+  }
+  .speaker:active{background:#dde4ff}
+  .speaker.speaking{background:var(--soleil);color:#fff}
+  .w-fr{font-weight:800;font-size:17px}
+  .w-ru{margin-left:auto;color:var(--ink-soft);font-size:15px;text-align:right}
+  .audio-note{font-size:13px;color:var(--ink-soft);text-align:center;margin:0 0 14px}
+
+  /* ---------- Экран 3: игра ---------- */
+  .hud{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--card);border-radius:14px;padding:10px 14px;box-shadow:var(--shadow);
+    margin-bottom:8px;font-weight:800;font-size:15px;
+  }
+  .hud .errors{color:var(--rouge)}
+  .progressbar{height:8px;background:var(--gris);border-radius:99px;overflow:hidden;margin-bottom:16px}
+  .progressbar > div{height:100%;width:0;background:var(--vert);border-radius:99px;transition:width .3s ease}
+
+  .board{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;
+    perspective:900px;
+  }
+  @media (min-width:480px){.board{grid-template-columns:repeat(5,1fr)}}
+
+  .card{
+    position:relative;aspect-ratio:1/1;border:none;background:transparent;
+    cursor:pointer;padding:0;border-radius:14px;
+  }
+  .card-inner{
+    position:absolute;inset:0;border-radius:14px;
+    transform-style:preserve-3d;transition:transform .4s ease;
+  }
+  .card.open .card-inner,.card.solved .card-inner{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;
+    display:flex;align-items:center;justify-content:center;padding:6px;
+    font-weight:800;box-shadow:var(--shadow);
+  }
+  .face.front{background:var(--gris);color:var(--ink-soft);font-size:26px;font-family:'Comfortaa',cursive}
+  .face.back{
+    background:var(--card);color:var(--ink);transform:rotateY(180deg);
+    font-size:14px;text-align:center;line-height:1.2;word-break:break-word;hyphens:auto;
+  }
+  .card.open .face.back{box-shadow:0 0 0 3px var(--soleil), var(--shadow)}
+  .card.solved{cursor:default}
+  .card.solved .face.back{background:var(--vert-bg);color:var(--vert);box-shadow:0 0 0 2px var(--vert)}
+  .card.solved .face.back::after{content:'✓';position:absolute;top:4px;right:7px;font-size:12px}
+  .card.wrong .face.back{background:var(--rouge-bg);color:var(--rouge);box-shadow:0 0 0 3px var(--rouge)}
+  .card.wrong .card-inner{animation:shake .4s ease}
+  @keyframes shake{
+    0%,100%{transform:rotateY(180deg) translateX(0)}
+    25%{transform:rotateY(180deg) translateX(-5px)}
+    75%{transform:rotateY(180deg) translateX(5px)}
+  }
+
+  .hint{
+    text-align:center;font-size:14px;color:var(--ink-soft);margin:0 0 10px;min-height:20px;
+    transition:color .2s;
+  }
+  .hint.attention{color:var(--rouge);font-weight:800}
+
+  .translations{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding-bottom:8px}
+  .trans{
+    border:none;border-radius:999px;padding:12px 18px;min-height:46px;cursor:pointer;
+    background:var(--card);color:var(--ink);font-family:'Nunito',sans-serif;
+    font-size:15px;font-weight:700;box-shadow:var(--shadow);
+    transition:transform .08s ease,background .15s,color .15s,opacity .2s;
+  }
+  .trans:not(:disabled):active{transform:scale(.96)}
+  .trans.done{background:var(--vert-bg);color:var(--vert);opacity:.65;cursor:default;text-decoration:line-through}
+  .trans.flash-wrong{background:var(--rouge);color:#fff}
+  .trans.flash-right{background:var(--vert);color:#fff}
+
+  /* ---------- Экран 4: результат ---------- */
+  .result-hero{text-align:center;padding:30px 0 6px}
+  .result-hero .big{font-size:56px;line-height:1}
+  .result-hero h2{font-size:26px;color:var(--bleu);margin:10px 0 4px}
+  .result-hero p{color:var(--ink-soft);margin:0}
+  .stats{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:6px 18px;margin:20px 0 24px;
+  }
+  .stats .row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 0;border-bottom:1px solid var(--ciel);font-size:16px;
+  }
+  .stats .row:last-child{border-bottom:none}
+  .stats .val{font-weight:800;font-size:18px}
+  .stats .val.green{color:var(--vert)}
+  .stats .val.red{color:var(--rouge)}
+  .stats .val.blue{color:var(--bleu)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ЭКРАН 1: выбор уровня и темы -->
+  <section class="screen active" id="screen-home">
+    <div class="hero">
+      <div class="roof" aria-hidden="true">🏠</div>
+      <h1>Les <span class="accent">Mots</span></h1>
+      <p>Учим французские слова играя</p>
+    </div>
+
+    <div class="section-label">Уровень</div>
+    <span class="chip-level">A1 · Débutant</span>
+
+    <div class="section-label">Выбери тему</div>
+    <div class="themes" id="themes"></div>
+  </section>
+
+  <!-- ЭКРАН 2: список слов -->
+  <section class="screen" id="screen-words">
+    <div class="topbar">
+      <button class="back" id="back-home" aria-label="Назад">←</button>
+      <div class="title" id="words-title"></div>
+    </div>
+    <ul class="wordlist" id="wordlist"></ul>
+    <p class="audio-note" id="audio-note">🔊 Нажми на громкоговоритель, чтобы услышать слово</p>
+    <button class="btn" id="start-game">Начать игру&nbsp;🎮</button>
+  </section>
+
+  <!-- ЭКРАН 3: игра -->
+  <section class="screen" id="screen-game">
+    <div class="topbar">
+      <button class="back" id="back-words" aria-label="К списку слов">←</button>
+      <div class="title" id="game-title"></div>
+    </div>
+    <div class="hud">
+      <span id="hud-progress">0 из 0</span>
+      <span class="errors" id="hud-errors">Ошибки: 0</span>
+    </div>
+    <div class="progressbar"><div id="progress-fill"></div></div>
+    <div class="board" id="board"></div>
+    <p class="hint" id="hint">Нажми на карточку со знаком&nbsp;❓</p>
+    <div class="translations" id="translations"></div>
+  </section>
+
+  <!-- ЭКРАН 4: результат -->
+  <section class="screen" id="screen-result">
+    <div class="result-hero">
+      <div class="big" id="result-emoji">🎉</div>
+      <h2 id="result-headline">Отлично!</h2>
+      <p id="result-sub"></p>
+    </div>
+    <div class="stats">
+      <div class="row"><span>Всего слов</span><span class="val" id="st-total">0</span></div>
+      <div class="row"><span>Правильных ответов</span><span class="val green" id="st-correct">0</span></div>
+      <div class="row"><span>Ошибок</span><span class="val red" id="st-errors">0</span></div>
+      <div class="row"><span>Точность</span><span class="val blue" id="st-accuracy">0%</span></div>
+    </div>
+    <button class="btn" id="play-again">Играть ещё раз</button>
+    <button class="btn secondary" id="to-words">Вернуться к списку слов</button>
+    <button class="btn secondary" id="to-home">Выбрать другую тему</button>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   ДАННЫЕ
+   Чтобы добавить тему — допишите объект в массив THEMES.
+   Слов в теме может быть больше, чем WORDS_PER_GAME:
+   на игру случайно выбирается WORDS_PER_GAME слов.
+   ========================================================= */
+const WORDS_PER_GAME = 15;
+
+const THEMES = [
+  {
+    id: 'maison',
+    level: 'A1 · Débutant',
+    emoji: '🏠',
+    fr: 'La maison',
+    ru: 'Дом',
+    locked: false,
+    words: [
+      { fr: 'la maison',        ru: 'дом' },
+      { fr: "l'appartement",    ru: 'квартира' },
+      { fr: 'la chambre',       ru: 'спальня' },
+      { fr: 'la cuisine',       ru: 'кухня' },
+      { fr: 'la salle de bain', ru: 'ванная комната' },
+      { fr: 'le salon',         ru: 'гостиная' },
+      { fr: 'la porte',         ru: 'дверь' },
+      { fr: 'la fenêtre',       ru: 'окно' },
+      { fr: 'le lit',           ru: 'кровать' },
+      { fr: 'la table',         ru: 'стол' },
+      { fr: 'la chaise',        ru: 'стул' },
+      { fr: 'le canapé',        ru: 'диван' },
+      { fr: 'la lampe',         ru: 'лампа' },
+      { fr: 'le tapis',         ru: 'ковёр' },
+      { fr: 'le jardin',        ru: 'сад' }
+    ]
+  },
+  /* Будущие темы — пока заглушки на главном экране */
+  { id: 'famille',    emoji: '👨‍👩‍👧', fr: 'La famille',    ru: 'Семья',    locked: true, words: [] },
+  { id: 'nourriture', emoji: '🥐',     fr: 'La nourriture', ru: 'Еда',      locked: true, words: [] },
+  { id: 'animaux',    emoji: '🐈',     fr: 'Les animaux',   ru: 'Животные', locked: true, words: [] },
+  { id: 'couleurs',   emoji: '🎨',     fr: 'Les couleurs',  ru: 'Цвета',    locked: true, words: [] }
+];
+
+/* =========================================================
+   СОСТОЯНИЕ
+   ========================================================= */
+const state = {
+  theme: null,        // выбранная тема
+  gameWords: [],      // слова текущей сессии
+  openIndex: null,    // индекс открытой карточки
+  solved: new Set(),  // индексы решённых карточек
+  errors: 0,
+  locked: false       // блокировка ввода на время анимации ошибки
+};
+
+/* =========================================================
+   УТИЛИТЫ
+   ========================================================= */
+const $ = id => document.getElementById(id);
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function show(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(screenId).classList.add('active');
+  window.scrollTo({ top: 0 });
+}
+
+/* ----- озвучка (Web Speech API, голос fr-FR) ----- */
+const speech = {
+  supported: 'speechSynthesis' in window,
+  voice: null,
+  pick() {
+    if (!this.supported) return;
+    const voices = speechSynthesis.getVoices();
+    this.voice = voices.find(v => v.lang === 'fr-FR') ||
+                 voices.find(v => v.lang && v.lang.startsWith('fr')) || null;
+  },
+  say(text, btn) {
+    if (!this.supported) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR';
+    if (this.voice) u.voice = this.voice;
+    u.rate = 0.85;
+    if (btn) {
+      btn.classList.add('speaking');
+      u.onend = u.onerror = () => btn.classList.remove('speaking');
+    }
+    speechSynthesis.speak(u);
+  }
+};
+if (speech.supported) {
+  speech.pick();
+  speechSynthesis.onvoiceschanged = () => speech.pick();
+}
+
+/* =========================================================
+   ЭКРАН 1 — темы
+   ========================================================= */
+function renderHome() {
+  const wrap = $('themes');
+  wrap.innerHTML = '';
+  THEMES.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'theme-card' + (t.locked ? ' locked' : '');
+    b.innerHTML = `
+      <span class="emoji">${t.emoji}</span>
+      <span><div class="t-fr">${t.fr}</div><div class="t-ru">${t.ru}</div></span>
+      ${t.locked ? '<span class="soon">скоро</span>' : '<span class="go">→</span>'}`;
+    if (!t.locked) {
+      b.addEventListener('click', () => { state.theme = t; renderWords(); show('screen-words'); });
+    } else {
+      b.disabled = true;
+    }
+    wrap.appendChild(b);
+  });
+}
+
+/* =========================================================
+   ЭКРАН 2 — список слов
+   ========================================================= */
+function renderWords() {
+  const t = state.theme;
+  $('words-title').textContent = `${t.fr} · ${t.ru}`;
+  const ul = $('wordlist');
+  ul.innerHTML = '';
+  t.words.forEach(w => {
+    const li = document.createElement('li');
+    if (speech.supported) {
+      const sp = document.createElement('button');
+      sp.className = 'speaker';
+      sp.setAttribute('aria-label', 'Прослушать: ' + w.fr);
+      sp.textContent = '🔊';
+      sp.addEventListener('click', () => speech.say(w.fr, sp));
+      li.appendChild(sp);
+    }
+    const fr = document.createElement('span');
+    fr.className = 'w-fr';
+    fr.textContent = w.fr;
+    const ru = document.createElement('span');
+    ru.className = 'w-ru';
+    ru.textContent = w.ru;
+    li.append(fr, ru);
+    ul.appendChild(li);
+  });
+  $('audio-note').style.display = speech.supported ? '' : 'none';
+}
+
+/* =========================================================
+   ЭКРАН 3 — игра
+   ========================================================= */
+function startGame() {
+  const t = state.theme;
+  state.gameWords = shuffle(t.words).slice(0, WORDS_PER_GAME);
+  state.openIndex = null;
+  state.solved = new Set();
+  state.errors = 0;
+  state.locked = false;
+
+  $('game-title').textContent = `${t.fr} · ${t.ru}`;
+  renderBoard();
+  renderTranslations();
+  updateHud();
+  setHint('Нажми на карточку со знаком ❓');
+  show('screen-game');
+}
+
+function renderBoard() {
+  const board = $('board');
+  board.innerHTML = '';
+  state.gameWords.forEach((w, i) => {
+    const c = document.createElement('button');
+    c.className = 'card';
+    c.dataset.index = i;
+    c.setAttribute('aria-label', 'Карточка ' + (i + 1));
+    c.innerHTML = `
+      <div class="card-inner">
+        <div class="face front">?</div>
+        <div class="face back">${w.fr}</div>
+      </div>`;
+    c.addEventListener('click', () => onCardTap(i));
+    board.appendChild(c);
+  });
+}
+
+function renderTranslations() {
+  const wrap = $('translations');
+  wrap.innerHTML = '';
+  shuffle(state.gameWords).forEach(w => {
+    const b = document.createElement('button');
+    b.className = 'trans';
+    b.textContent = w.ru;
+    b.dataset.ru = w.ru;
+    b.addEventListener('click', () => onTranslationTap(b));
+    wrap.appendChild(b);
+  });
+}
+
+function cardEl(i) {
+  return document.querySelector(`.card[data-index="${i}"]`);
+}
+
+function onCardTap(i) {
+  if (state.locked || state.solved.has(i)) return;
+  if (state.openIndex === i) return;
+
+  // закрыть ранее открытую карточку
+  if (state.openIndex !== null) cardEl(state.openIndex).classList.remove('open');
+
+  state.openIndex = i;
+  const el = cardEl(i);
+  el.classList.add('open');
+  setHint('Теперь выбери перевод 👇');
+}
+
+function onTranslationTap(btn) {
+  if (state.locked || btn.classList.contains('done')) return;
+  if (state.openIndex === null) {
+    setHint('Сначала открой карточку ❓', true);
+    return;
+  }
+
+  const i = state.openIndex;
+  const word = state.gameWords[i];
+  const el = cardEl(i);
+
+  if (btn.dataset.ru === word.ru) {
+    /* ---- правильно ---- */
+    state.solved.add(i);
+    state.openIndex = null;
+    el.classList.remove('open');
+    el.classList.add('solved');
+    el.disabled = true;
+    btn.classList.add('flash-right');
+    setTimeout(() => { btn.classList.remove('flash-right'); btn.classList.add('done'); btn.disabled = true; }, 350);
+    speech.say(word.fr);
+    updateHud();
+    setHint('Правильно! 🎉');
+
+    if (state.solved.size === state.gameWords.length) {
+      setTimeout(showResult, 900);
+    }
+  } else {
+    /* ---- ошибка ---- */
+    state.errors++;
+    state.locked = true;
+    el.classList.add('wrong');
+    btn.classList.add('flash-wrong');
+    updateHud();
+    setHint('Не то слово, попробуй ещё раз', true);
+    setTimeout(() => {
+      el.classList.remove('wrong');
+      btn.classList.remove('flash-wrong');
+      state.locked = false;
+      setHint('Выбери перевод 👇');
+    }, 1200);
+  }
+}
+
+function updateHud() {
+  $('hud-progress').textContent = `${state.solved.size} из ${state.gameWords.length}`;
+  $('hud-errors').textContent = `Ошибки: ${state.errors}`;
+  $('progress-fill').style.width =
+    (state.gameWords.length ? (state.solved.size / state.gameWords.length) * 100 : 0) + '%';
+}
+
+function setHint(text, attention = false) {
+  const h = $('hint');
+  h.textContent = text;
+  h.classList.toggle('attention', attention);
+}
+
+/* =========================================================
+   ЭКРАН 4 — результат
+   ========================================================= */
+function showResult() {
+  const total = state.gameWords.length;
+  const errors = state.errors;
+  const accuracy = Math.round((total / (total + errors)) * 100);
+
+  let emoji = '🏆', headline = 'Превосходно!';
+  if (errors > 0)          { emoji = '🎉'; headline = 'Отлично!'; }
+  if (accuracy < 80)       { emoji = '👍'; headline = 'Хорошо!'; }
+  if (accuracy < 60)       { emoji = '💪'; headline = 'Неплохо для начала!'; }
+
+  $('result-emoji').textContent = emoji;
+  $('result-headline').textContent = headline;
+  $('result-sub').textContent = `Ты завершил тему: ${state.theme.fr} · ${state.theme.ru}`;
+  $('st-total').textContent = total;
+  $('st-correct').textContent = total;
+  $('st-errors').textContent = errors;
+  $('st-accuracy').textContent = accuracy + '%';
+  show('screen-result');
+}
+
+/* =========================================================
+   НАВИГАЦИЯ
+   ========================================================= */
+$('back-home').addEventListener('click', () => show('screen-home'));
+$('back-words').addEventListener('click', () => { renderWords(); show('screen-words'); });
+$('start-game').addEventListener('click', startGame);
+$('play-again').addEventListener('click', startGame);
+$('to-words').addEventListener('click', () => { renderWords(); show('screen-words'); });
+$('to-home').addEventListener('click', () => show('screen-home'));
+
+renderHome();
+</script>
+</body>
+</html>
