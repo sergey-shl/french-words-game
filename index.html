@@ -4,270 +4,250 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Les Mots — учим французские слова</title>
-<meta name="description" content="Мини-игра для запоминания французских слов: открывай карточки и подбирай перевод.">
+<meta name="description" content="Игры для запоминания французских слов: карточки и поиск слов.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Палитра в духе Canada.ca: белый фон, тёмно-синий служебный,
-       один синий акцент, осмысленные зелёный/красный */
-    --bg:#FFFFFF;
-    --header:#26374A;        /* тёмно-синяя шапка */
-    --blue:#284162;          /* служебный синий — ссылки, кнопки */
-    --blue-hover:#1C578A;
-    --ink:#333333;           /* основной текст */
-    --ink-soft:#5C5C5C;
-    --line:#CCCCCC;          /* тонкие разделители */
-    --line-soft:#E0E0E0;
-    --field:#F5F5F5;         /* закрытая карточка / нейтральный фон */
-    --field-line:#D8D8D8;
-    --green:#278400;         /* правильно (как «Green job») */
-    --green-bg:#EAF3E5;
-    --red:#D3080C;           /* ошибка / красный флага */
-    --red-bg:#F9E5E5;
-    --focus:#FFBF47;         /* жёлтый фокус — стандарт госдоступности */
+    --creme:#FAF5EC;
+    --surface:#FFFFFF;
+    --encre:#3B352E;
+    --encre-soft:#8C8377;
+    --bleu:#2E5077;
+    --bleu-deep:#243F5E;
+    --terre:#C9663F;
+    --hair:rgba(59,53,46,.08);
+    --vert:#3E7C4F;  --vert-bg:#E7F0E4;
+    --rouge:#C53A28; --rouge-bg:#F6E2DD;
+    --focus:#E8A23D;
+    --shadow-soft:0 1px 2px rgba(59,53,46,.04), 0 6px 18px rgba(59,53,46,.06);
+    --shadow-lift:0 2px 4px rgba(59,53,46,.05), 0 12px 28px rgba(59,53,46,.10);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
-    font-family:'Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    min-height:100dvh;
-    line-height:1.5;
-    font-size:16px;
+    font-family:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--creme);color:var(--encre);min-height:100dvh;line-height:1.5;font-size:16px;
+    -webkit-font-smoothing:antialiased;
   }
 
-  /* ---------- глобальная шапка (как у Canada.ca) ---------- */
-  .gc-header{
-    background:var(--header);
-    color:#fff;
-    padding:14px 0;
-  }
-  .gc-header .inner{
-    max-width:680px;margin:0 auto;padding:0 16px;
-    display:flex;align-items:baseline;gap:12px;
-  }
-  .gc-header .brand{font-weight:900;font-size:20px;letter-spacing:.2px}
-  .gc-header .brand .fr-flag{color:#fff;opacity:.55;font-weight:400;font-size:14px}
+  /* ---------- шапка / логотип ---------- */
+  .appbar{padding:20px 0 4px}
+  .appbar .inner{max-width:600px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{font-family:'Alegreya',serif;font-weight:800;font-size:26px;color:var(--bleu);line-height:1;letter-spacing:.2px}
+  .brand .dot{color:var(--terre)}
+  .brand-sub{font-size:12.5px;color:var(--encre-soft);margin-top:3px;font-weight:600}
+  .level{font-weight:800;font-size:13px;color:var(--bleu);background:var(--surface);border:1px solid var(--hair);
+    border-radius:999px;padding:7px 14px;box-shadow:var(--shadow-soft);white-space:nowrap}
 
-  .app{max-width:680px;margin:0 auto;padding:0 16px calc(40px + env(safe-area-inset-bottom));}
+  .app{max-width:600px;margin:0 auto;padding:0 20px calc(40px + env(safe-area-inset-bottom));}
 
-  /* ---------- общие элементы ---------- */
   .screen{display:none}
   .screen.active{display:block}
 
-  h1{font-size:30px;font-weight:900;line-height:1.2;margin:24px 0 4px;color:var(--ink)}
-  h2{font-size:24px;font-weight:700;margin:0}
-  .lead{color:var(--ink-soft);font-size:17px;margin:0 0 8px}
+  /* ---------- типографика ---------- */
+  h1.page-title,h2.page-title{font-family:'Alegreya',serif;font-weight:800;color:var(--encre);letter-spacing:-.01em;margin:18px 0 4px;line-height:1.15}
+  h1.page-title{font-size:28px}
+  h2.page-title.small{font-size:23px;margin-top:14px}
+  .hero{padding:28px 0 20px}
+  .hero h1{font-family:'Alegreya',serif;font-weight:800;font-size:34px;line-height:1.12;margin:0 0 10px;letter-spacing:-.01em}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--terre);margin-bottom:12px}
+  .lead{margin:0 0 4px;color:var(--encre-soft);font-size:16.5px;max-width:46ch}
+  .section-label{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--encre-soft);margin:8px 0 14px}
 
-  .eyebrow{
-    display:inline-block;font-size:13px;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--ink-soft);
-    background:var(--field);border:1px solid var(--line-soft);
-    padding:3px 10px;border-radius:3px;
-  }
-  .rule{border:none;border-top:1px solid var(--line);margin:18px 0}
-
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    min-height:48px;padding:11px 22px;width:100%;
-    border:1px solid var(--blue);border-radius:4px;cursor:pointer;
-    font-family:inherit;font-size:17px;font-weight:700;
-    color:#fff;background:var(--blue);
-    transition:background .12s;
-  }
-  .btn:hover{background:var(--blue-hover);border-color:var(--blue-hover)}
-  .btn.secondary{background:#fff;color:var(--blue)}
-  .btn.secondary:hover{background:var(--field)}
+  /* ---------- кнопки ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:13px 24px;width:100%;
+    border:none;border-radius:999px;cursor:pointer;font-family:inherit;font-size:17px;font-weight:800;
+    color:#fff;background:var(--bleu);box-shadow:var(--shadow-soft);transition:background .15s,transform .12s,box-shadow .15s}
+  .btn:hover{background:var(--bleu-deep);box-shadow:var(--shadow-lift)}
+  .btn:active{transform:translateY(1px)}
+  .btn.secondary{background:var(--surface);color:var(--bleu);box-shadow:inset 0 0 0 1.5px rgba(46,80,119,.25)}
+  .btn.secondary:hover{background:#fff;box-shadow:inset 0 0 0 1.5px var(--bleu)}
   .btn + .btn{margin-top:10px}
-  .btn:focus-visible,a:focus-visible,.tile:focus-visible,.card:focus-visible,
-  .trans:focus-visible,.speaker:focus-visible,.theme-row:focus-visible{
-    outline:3px solid var(--focus);outline-offset:1px;
-  }
+  .btn:focus-visible,a:focus-visible,.card:focus-visible,.trans:focus-visible,
+  .speaker:focus-visible,.theme:focus-visible,.choice:focus-visible,.back:focus-visible{
+    outline:3px solid var(--focus);outline-offset:2px}
 
-  .topbar{display:flex;align-items:center;gap:12px;padding-top:18px}
-  .back{
-    flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;
-    background:none;border:none;cursor:pointer;font-family:inherit;
-    color:var(--blue);font-size:16px;font-weight:700;padding:6px 2px;
-  }
-  .back:hover{text-decoration:underline}
+  .topbar{padding-top:16px}
+  .back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:inherit;
+    color:var(--bleu);font-size:16px;font-weight:700;padding:6px 2px}
+  .back:hover{color:var(--bleu-deep)}
 
-  /* ---------- Экран 1: Home ---------- */
-  .hero{padding-top:8px}
-  .hero h1{margin-top:28px}
+  /* ---------- карточки тем ---------- */
+  .themes{display:flex;flex-direction:column;gap:12px}
+  .theme{display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;
+    background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:15px 16px;
+    box-shadow:var(--shadow-soft);font-family:inherit;color:inherit;
+    transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,border-color .18s;
+    opacity:0;transform:translateY(10px);animation:rise .5s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .theme:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:rgba(46,80,119,.25)}
+  .theme:active{transform:translateY(0) scale(.99)}
+  .chip{flex:0 0 auto;width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:25px;line-height:1}
+  .t-text{min-width:0;display:flex;flex-direction:column}
+  .t-fr{font-family:'Alegreya',serif;font-weight:700;font-size:20px;color:var(--bleu);line-height:1.15}
+  .t-ru{font-size:14.5px;color:var(--encre-soft);font-weight:600;margin-top:1px}
+  .chev{margin-left:auto;flex:0 0 auto;color:var(--terre);display:flex;align-items:center;transition:transform .18s}
+  .theme:hover .chev,.choice:hover .chev{transform:translateX(3px)}
 
-  .field-group{margin:22px 0 0}
-  .field-label{display:block;font-size:14px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
-  .level-tag{
-    display:inline-block;border:1px solid var(--line);background:var(--field);
-    padding:8px 14px;border-radius:4px;font-weight:700;font-size:15px;color:var(--ink);
-  }
+  .tint-1{background:#F6E3D5}.tint-2{background:#F7EBCF}.tint-3{background:#E4ECDC}.tint-4{background:#DDE6F0}
+  .tint-5{background:#F4E0E0}.tint-6{background:#E9E2EF}.tint-7{background:#DFEDE6}.tint-8{background:#EFE7D6}
 
-  .theme-list{list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--line)}
-  .theme-row{
-    display:flex;align-items:center;gap:14px;width:100%;text-align:left;
-    background:none;border:none;border-bottom:1px solid var(--line);
-    padding:16px 4px;cursor:pointer;font-family:inherit;color:var(--ink);
-  }
-  .theme-row:not(.locked):hover{background:var(--field)}
-  .theme-row .t-fr{font-weight:700;font-size:18px;color:var(--blue)}
-  .theme-row:not(.locked):hover .t-fr{text-decoration:underline}
-  .theme-row .t-ru{color:var(--ink-soft);font-size:15px}
-  .theme-row .chev{margin-left:auto;color:var(--blue);font-size:18px;font-weight:700}
-  .theme-row.locked{cursor:default;color:var(--ink-soft)}
-  .theme-row.locked .t-fr{color:var(--ink-soft)}
-  .theme-row.locked .soon{
-    margin-left:auto;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
-    color:var(--ink-soft);border:1px solid var(--line);border-radius:3px;padding:3px 9px;
-  }
+  /* ---------- выбор занятия ---------- */
+  .choice{display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;
+    background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:18px 16px;
+    box-shadow:var(--shadow-soft);font-family:inherit;color:inherit;margin-top:12px;
+    transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,border-color .18s}
+  .choice:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:rgba(46,80,119,.25)}
+  .choice:active{transform:translateY(0) scale(.99)}
+  .choice-chip{flex:0 0 auto;width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:var(--bleu)}
+  .choice-text{display:flex;flex-direction:column}
+  .choice-title{font-family:'Alegreya',serif;font-weight:800;font-size:21px;color:var(--bleu);line-height:1.1}
+  .choice-desc{font-size:14.5px;color:var(--encre-soft);font-weight:600;margin-top:3px}
 
-  /* ---------- Экран 2: список слов ---------- */
-  .wordtable{width:100%;border-collapse:collapse;margin-top:6px}
-  .wordtable tr{border-bottom:1px solid var(--line-soft)}
-  .wordtable tr:first-child{border-top:1px solid var(--line)}
-  .wordtable td{padding:12px 4px;vertical-align:middle}
-  .wordtable .c-audio{width:48px}
-  .wordtable .w-fr{font-weight:700;font-size:17px}
-  .wordtable .w-ru{color:var(--ink-soft);text-align:right;font-size:16px}
-  .speaker{
-    width:40px;height:40px;border-radius:4px;border:1px solid var(--line);cursor:pointer;
-    background:#fff;color:var(--blue);font-size:17px;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .speaker:hover{background:var(--field)}
-  .speaker.speaking{background:var(--blue);color:#fff;border-color:var(--blue)}
-  .audio-note{font-size:14px;color:var(--ink-soft);margin:14px 0 18px}
+  /* ---------- список слов (изучение) ---------- */
+  .wordtable{width:100%;border-collapse:collapse;margin-top:10px}
+  .wordtable tr{border-bottom:1px solid var(--hair)}
+  .wordtable td{padding:13px 2px;vertical-align:middle}
+  .wordtable .c-audio{width:50px}
+  .wordtable .w-fr{font-family:'Alegreya',serif;font-weight:700;font-size:18px;color:var(--bleu)}
+  .wordtable .w-ru{color:var(--encre-soft);text-align:right;font-size:15.5px;font-weight:600}
+  .speaker{width:42px;height:42px;border-radius:13px;border:none;cursor:pointer;background:#F1E7D6;color:var(--terre);
+    display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s}
+  .speaker:hover{background:#EBD9C2}
+  .speaker.speaking{background:var(--terre);color:#fff}
+  .audio-note{font-size:14px;color:var(--encre-soft);margin:16px 0 20px;font-weight:600}
 
-  /* ---------- Экран 3: игра ---------- */
-  .hud{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    margin:14px 0 6px;font-weight:700;font-size:15px;
-  }
-  .hud .errors{color:var(--red)}
-  .hud .errors[data-zero="1"]{color:var(--ink-soft)}
-  .progressbar{height:6px;background:var(--field);border:1px solid var(--field-line);border-radius:99px;overflow:hidden;margin-bottom:18px}
-  .progressbar > div{height:100%;width:0;background:var(--green);transition:width .3s ease}
+  /* ---------- HUD + прогресс ---------- */
+  .hud{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 8px;font-weight:800;font-size:15px;color:var(--encre)}
+  .hud .errors{color:var(--rouge)}
+  .hud .errors[data-zero="1"]{color:var(--encre-soft)}
+  .progressbar{height:8px;background:#EFE6D7;border-radius:99px;overflow:hidden;margin-bottom:18px}
+  .progressbar>div{height:100%;width:0;background:var(--vert);border-radius:99px;transition:width .35s cubic-bezier(.22,1,.36,1)}
+  .hint{font-size:15px;color:var(--encre-soft);margin:0 0 12px;min-height:22px;font-weight:600}
+  .hint.attention{color:var(--rouge);font-weight:800}
 
-  .board{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;
-    -webkit-perspective:900px;perspective:900px;
-  }
+  /* ---------- карточки (игра) ---------- */
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;-webkit-perspective:900px;perspective:900px}
   @media (min-width:480px){.board{grid-template-columns:repeat(5,1fr)}}
-
-  .card{
-    aspect-ratio:1/1;border:none;background:transparent;cursor:pointer;padding:0;
-  }
-  .card-inner{
-    position:relative;display:block;width:100%;height:100%;border-radius:4px;
-    -webkit-transform-style:preserve-3d;transform-style:preserve-3d;
-    transition:transform .4s ease;
-  }
-  .card.open .card-inner,.card.solved .card-inner{
-    -webkit-transform:rotateY(180deg);transform:rotateY(180deg)
-  }
-  .face{
-    position:absolute;top:0;left:0;width:100%;height:100%;border-radius:4px;
+  .card{aspect-ratio:1/1;border:none;background:transparent;cursor:pointer;padding:0}
+  .card-inner{position:relative;display:block;width:100%;height:100%;border-radius:14px;
+    -webkit-transform-style:preserve-3d;transform-style:preserve-3d;transition:transform .4s ease}
+  .card.open .card-inner,.card.solved .card-inner{-webkit-transform:rotateY(180deg);transform:rotateY(180deg)}
+  .face{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:14px;
     -webkit-backface-visibility:hidden;backface-visibility:hidden;
-    display:flex;align-items:center;justify-content:center;padding:6px;font-weight:700;
-  }
-  .face.front{background:var(--field);border:1px solid var(--field-line);color:var(--ink-soft);font-size:26px}
-  .face.back{
-    background:#fff;border:1px solid var(--field-line);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;padding:6px;box-shadow:var(--shadow-soft)}
+  .face.front{background:#F1E7D6;color:var(--encre-soft);font-family:'Alegreya',serif;font-weight:800;font-size:28px}
+  .face.back{background:var(--surface);color:var(--bleu);font-weight:800;
     -webkit-transform:rotateY(180deg);transform:rotateY(180deg);
-    font-size:14px;text-align:center;line-height:1.2;word-break:break-word;hyphens:auto;
-  }
-  .card.open .face.back{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
+    font-size:14px;text-align:center;line-height:1.2;word-break:break-word;hyphens:auto}
+  .card.open .face.back{box-shadow:0 0 0 2.5px var(--bleu),var(--shadow-soft)}
   .card.solved{cursor:default}
-  .card.solved .face.back{background:var(--green-bg);border-color:var(--green);color:var(--green)}
-  .card.solved .face.back::after{content:'✓';position:absolute;top:4px;right:7px;font-size:13px}
-  .card.wrong .face.back{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+  .card.solved .face.back{background:var(--vert-bg);color:var(--vert);box-shadow:0 0 0 2px var(--vert)}
+  .card.solved .face.back::after{content:'✓';position:absolute;top:5px;right:8px;font-size:13px}
+  .card.wrong .face.back{background:var(--rouge-bg);color:var(--rouge);box-shadow:0 0 0 2.5px var(--rouge)}
   .card.wrong .card-inner{animation:shake .4s ease}
-  @keyframes shake{
-    0%,100%{transform:rotateY(180deg) translateX(0)}
-    25%{transform:rotateY(180deg) translateX(-5px)}
-    75%{transform:rotateY(180deg) translateX(5px)}
-  }
-
-  .hint{font-size:15px;color:var(--ink-soft);margin:0 0 12px;min-height:22px}
-  .hint.attention{color:var(--red);font-weight:700}
+  @keyframes shake{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-5px)}75%{transform:rotateY(180deg) translateX(5px)}}
 
   .translations{display:flex;flex-wrap:wrap;gap:8px}
-  .trans{
-    border:1px solid var(--line);border-radius:4px;padding:10px 16px;min-height:44px;cursor:pointer;
-    background:#fff;color:var(--ink);font-family:inherit;font-size:16px;font-weight:700;
-    transition:background .12s,color .12s,border-color .12s;
-  }
-  .trans:not(:disabled):hover{background:var(--field)}
-  .trans.done{background:var(--green-bg);color:var(--green);border-color:var(--green);opacity:.7;cursor:default;text-decoration:line-through}
-  .trans.flash-wrong{background:var(--red);color:#fff;border-color:var(--red)}
-  .trans.flash-right{background:var(--green);color:#fff;border-color:var(--green)}
+  .trans{border:1px solid var(--hair);border-radius:999px;padding:11px 18px;min-height:46px;cursor:pointer;
+    background:var(--surface);color:var(--encre);font-family:inherit;font-size:16px;font-weight:700;box-shadow:var(--shadow-soft);
+    transition:background .12s,color .12s,box-shadow .12s,transform .1s}
+  .trans:not(:disabled):hover{background:#fff;box-shadow:var(--shadow-lift)}
+  .trans:not(:disabled):active{transform:scale(.97)}
+  .trans.done{background:var(--vert-bg);color:var(--vert);box-shadow:none;opacity:.7;cursor:default;text-decoration:line-through}
+  .trans.flash-wrong{background:var(--rouge);color:#fff}
+  .trans.flash-right{background:var(--vert);color:#fff}
 
-  /* ---------- Экран 4: результат ---------- */
-  .result-head{padding-top:28px}
+  /* ---------- поиск слов ---------- */
+  .ws-wrap{-webkit-user-select:none;user-select:none;touch-action:none;margin:6px 0 18px}
+  .ws-grid{display:grid;gap:4px}
+  .ws-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:var(--surface);
+    border:1px solid var(--hair);border-radius:7px;font-weight:800;font-size:15px;color:var(--encre);text-transform:uppercase;cursor:pointer;box-shadow:0 1px 1px rgba(59,53,46,.03)}
+  @media (max-width:400px){.ws-cell{font-size:13px;border-radius:6px}}
+  .ws-cell.sel{background:var(--bleu);color:#fff;border-color:var(--bleu)}
+  .ws-cell.found{background:var(--vert-bg);color:var(--vert);border-color:var(--vert)}
+  .ws-cell.found.sel{background:var(--vert);color:#fff}
+  .ws-words{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .ws-word{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:8px 13px;font-size:15px;line-height:1.25;box-shadow:var(--shadow-soft)}
+  .ws-word .fr{font-weight:800;color:var(--bleu)}
+  .ws-word .ru{color:var(--encre-soft);font-size:13px;font-weight:600}
+  .ws-word.found{background:var(--vert-bg);border-color:var(--vert);box-shadow:none}
+  .ws-word.found .fr{text-decoration:line-through;color:var(--vert)}
+  .ws-word.found .ru{color:var(--vert)}
+
+  /* ---------- результат ---------- */
+  .result-head{padding-top:26px}
   .result-head .eyebrow{margin-bottom:10px}
-  .result-head h2{font-size:28px;font-weight:900}
-  .result-head p{color:var(--ink-soft);margin:6px 0 0;font-size:17px}
+  .result-head h2{font-family:'Alegreya',serif;font-size:30px;font-weight:800;margin:0;letter-spacing:-.01em}
+  .result-head p{color:var(--encre-soft);margin:6px 0 0;font-size:16.5px;font-weight:600}
   .stats{width:100%;border-collapse:collapse;margin:22px 0 26px}
-  .stats tr{border-bottom:1px solid var(--line-soft)}
-  .stats tr:first-child{border-top:1px solid var(--line)}
-  .stats td{padding:14px 4px;font-size:16px}
-  .stats td.val{text-align:right;font-weight:900;font-size:20px}
-  .stats td.val.green{color:var(--green)}
-  .stats td.val.red{color:var(--red)}
-  .stats td.val.blue{color:var(--blue)}
+  .stats tr{border-bottom:1px solid var(--hair)}
+  .stats td{padding:15px 2px;font-size:16px;font-weight:600}
+  .stats td.val{text-align:right;font-family:'Alegreya',serif;font-weight:800;font-size:22px}
+  .stats td.val.green{color:var(--vert)}
+  .stats td.val.red{color:var(--rouge)}
+  .stats td.val.blue{color:var(--bleu)}
 
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none!important;transition:none!important}
-  }
+  @media (prefers-reduced-motion:reduce){.theme{animation:none;opacity:1;transform:none}*{transition:none!important}}
 </style>
 </head>
 <body>
 
-<header class="gc-header">
+<header class="appbar">
   <div class="inner">
-    <span class="brand">Les&nbsp;Mots</span>
-    <span class="fr-flag">français&nbsp;·&nbsp;A1</span>
+    <div>
+      <div class="brand">Les Mots<span class="dot">.</span></div>
+      <div class="brand-sub">французский для всей семьи</div>
+    </div>
+    <span class="level">A1 · Débutant</span>
   </div>
 </header>
 
 <div class="app">
 
-  <!-- ЭКРАН 1: выбор уровня и темы -->
+  <!-- ЭКРАН 1: темы -->
   <section class="screen active" id="screen-home">
-    <div class="hero">
-      <span class="eyebrow">Словарь</span>
-      <h1>Учим французские слова</h1>
-      <p class="lead">Изучи слова по теме, затем открывай карточки и подбирай перевод.</p>
-    </div>
-
-    <div class="field-group">
-      <span class="field-label">Уровень</span>
-      <span class="level-tag">A1 · Débutant</span>
-    </div>
-
-    <div class="field-group">
-      <span class="field-label">Тема</span>
-      <ul class="theme-list" id="themes"></ul>
-    </div>
+    <section class="hero">
+      <span class="eyebrow">Французский · уровень A1</span>
+      <h1>С чего начнём сегодня?</h1>
+      <p class="lead">Выберите тему: сначала изучите слова, затем закрепите их в игре.</p>
+    </section>
+    <div class="section-label">Темы</div>
+    <div class="themes" id="themes"></div>
   </section>
 
-  <!-- ЭКРАН 2: список слов -->
+  <!-- ЭКРАН 2: выбор игры -->
+  <section class="screen" id="screen-activity">
+    <div class="topbar"><button class="back" id="back-home2">← К темам</button></div>
+    <h1 class="page-title" id="activity-title"></h1>
+    <p class="lead">Выберите занятие.</p>
+    <button class="choice" id="choice-cards">
+      <span class="choice-chip tint-4"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="12" height="15" rx="2"/><path d="M8.5 5.5 14 4a2 2 0 0 1 2.4 1.4l3 11"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Карточки</span><span class="choice-desc">Открывайте карточки и подбирайте перевод</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+    <button class="choice" id="choice-ws">
+      <span class="choice-chip tint-3"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Поиск слов</span><span class="choice-desc">Найдите французские слова в сетке букв</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+  </section>
+
+  <!-- ЭКРАН 3: список слов -->
   <section class="screen" id="screen-words">
-    <div class="topbar"><button class="back" id="back-home">← К темам</button></div>
-    <h1 id="words-title"></h1>
-    <hr class="rule">
+    <div class="topbar"><button class="back" id="back-activity">← Назад</button></div>
+    <h1 class="page-title" id="words-title"></h1>
     <table class="wordtable"><tbody id="wordlist"></tbody></table>
     <p class="audio-note" id="audio-note">Нажмите на значок звука, чтобы услышать произношение.</p>
     <button class="btn" id="start-game">Начать игру</button>
   </section>
 
-  <!-- ЭКРАН 3: игра -->
+  <!-- ЭКРАН 4: карточки -->
   <section class="screen" id="screen-game">
     <div class="topbar"><button class="back" id="back-words">← К списку слов</button></div>
-    <h1 id="game-title" style="font-size:24px;margin-top:14px"></h1>
+    <h2 class="page-title small" id="game-title"></h2>
     <div class="hud">
       <span id="hud-progress">0 из 0</span>
       <span class="errors" id="hud-errors" data-zero="1">Ошибки: 0</span>
@@ -278,7 +258,7 @@
     <div class="translations" id="translations"></div>
   </section>
 
-  <!-- ЭКРАН 4: результат -->
+  <!-- ЭКРАН 5: результат карточек -->
   <section class="screen" id="screen-result">
     <div class="result-head">
       <span class="eyebrow">Результат</span>
@@ -296,316 +276,517 @@
     <button class="btn secondary" id="to-home">Выбрать другую тему</button>
   </section>
 
+  <!-- ЭКРАН 6: поиск слов -->
+  <section class="screen" id="screen-wordsearch">
+    <div class="topbar"><button class="back" id="back-words2">← К списку слов</button></div>
+    <h2 class="page-title small" id="ws-title"></h2>
+    <div class="hud">
+      <span id="ws-progress">0 из 0</span>
+      <span class="errors" id="ws-errors" data-zero="1">Промахи: 0</span>
+    </div>
+    <div class="progressbar"><div id="ws-fill"></div></div>
+    <p class="hint" id="ws-hint">Найдите слова из списка. Проведите пальцем по буквам.</p>
+    <div class="ws-wrap"><div class="ws-grid" id="ws-grid"></div></div>
+    <div class="ws-words" id="ws-words"></div>
+  </section>
+
+  <!-- ЭКРАН 7: результат поиска слов -->
+  <section class="screen" id="screen-wsresult">
+    <div class="result-head">
+      <span class="eyebrow">Результат</span>
+      <h2 id="wsr-headline">Все слова найдены</h2>
+      <p id="wsr-sub"></p>
+    </div>
+    <table class="stats">
+      <tr><td>Слов в сетке</td><td class="val" id="wsr-total">0</td></tr>
+      <tr><td>Найдено</td><td class="val green" id="wsr-found">0</td></tr>
+      <tr><td>Промахов</td><td class="val red" id="wsr-errors">0</td></tr>
+    </table>
+    <button class="btn" id="ws-again">Играть ещё раз</button>
+    <button class="btn secondary" id="wsr-to-words">Вернуться к списку слов</button>
+    <button class="btn secondary" id="wsr-to-home">Выбрать другую тему</button>
+  </section>
+
 </div>
 
 <script>
 /* =========================================================
    ДАННЫЕ
-   Чтобы добавить тему — допишите объект в массив THEMES.
-   Слов в теме может быть больше, чем WORDS_PER_GAME:
-   на игру случайно выбирается WORDS_PER_GAME слов.
    ========================================================= */
-const WORDS_PER_GAME = 15;
+const RAW = {
+  maison:{ fr:'La maison', ru:'Дом', words:[
+    ['la maison','дом'],["l'appartement",'квартира'],['la pièce','комната'],['la chambre','спальня / комната'],
+    ['le salon','гостиная'],['la cuisine','кухня'],['la salle de bains','ванная комната'],['les toilettes','туалет'],
+    ['le couloir','коридор'],["l'escalier",'лестница'],['la porte','дверь'],['la fenêtre','окно'],['le mur','стена'],
+    ['le sol','пол'],['le plafond','потолок'],['la table','стол'],['la chaise','стул'],['le lit','кровать'],
+    ["l'armoire",'шкаф'],['le canapé','диван'],['le bureau','письменный стол / кабинет'],['la lampe','лампа'],
+    ['le tapis','ковёр'],['la clé','ключ'],['le jardin','сад']
+  ]},
+  famille:{ fr:'La famille', ru:'Семья', words:[
+    ['la famille','семья'],['les parents','родители'],['le père','отец'],['la mère','мать'],['le fils','сын'],
+    ['la fille','дочь / девочка'],['le frère','брат'],['la sœur','сестра'],['le mari','муж'],['la femme','жена / женщина'],
+    ["l'enfant",'ребёнок'],['le bébé','младенец'],['le grand-père','дедушка'],['la grand-mère','бабушка'],
+    ['les grands-parents','бабушка и дедушка'],["l'oncle",'дядя'],['la tante','тётя'],['le cousin','двоюродный брат'],
+    ['la cousine','двоюродная сестра'],['le neveu','племянник'],['la nièce','племянница'],["l'ami",'друг'],
+    ["l'amie",'подруга'],['le couple','пара'],['le nom','имя / фамилия']
+  ]},
+  magasins:{ fr:'Les magasins', ru:'Магазины', words:[
+    ['le magasin','магазин'],['la boutique','магазинчик / бутик'],['le supermarché','супермаркет'],['le marché','рынок'],
+    ['la boulangerie','булочная'],['la pharmacie','аптека'],['la librairie','книжный магазин'],['la boucherie','мясная лавка'],
+    ['la poissonnerie','рыбный магазин'],["l'épicerie",'продуктовый магазин'],['la caisse','касса'],['le panier','корзина'],
+    ['le chariot','тележка'],['le client','клиент'],['la cliente','клиентка'],['le vendeur','продавец'],
+    ['la vendeuse','продавщица'],['le prix','цена'],["l'argent",'деньги'],['le produit','товар / продукт']
+  ]},
+  aliments:{ fr:'Les aliments', ru:'Продукты', words:[
+    ['le pain','хлеб'],["l'eau",'вода'],['le lait','молоко'],['le fromage','сыр'],['le beurre','масло'],["l'œuf",'яйцо'],
+    ['les pâtes','макароны'],['le riz','рис'],['la viande','мясо'],['le poisson','рыба'],['le poulet','курица'],
+    ['le jambon','ветчина'],['la soupe','суп'],['la salade','салат'],['la pomme','яблоко'],['la banane','банан'],
+    ["l'orange",'апельсин'],['la fraise','клубника'],['la tomate','помидор'],['la pomme de terre','картофель'],
+    ['la carotte','морковь'],["l'oignon",'лук'],['le café','кофе'],['le thé','чай'],['le jus','сок']
+  ]},
+  couleurs:{ fr:'Les couleurs', ru:'Цвета', words:[
+    ['la couleur','цвет'],['le rouge','красный'],['le bleu','синий / голубой'],['le vert','зелёный'],['le jaune','жёлтый'],
+    ['le noir','чёрный'],['le blanc','белый'],['le gris','серый'],['le marron','коричневый'],["l'orange",'оранжевый'],
+    ['le rose','розовый'],['le violet','фиолетовый'],['le beige','бежевый']
+  ]},
+  professions:{ fr:'Les professions', ru:'Профессии', words:[
+    ['le professeur','учитель / преподаватель'],['la professeure','учительница'],['le médecin','врач'],
+    ["l'infirmier",'медбрат'],["l'infirmière",'медсестра'],['le vendeur','продавец'],['la vendeuse','продавщица'],
+    ['le serveur','официант'],['la serveuse','официантка'],['le cuisinier','повар'],['la cuisinière','повар (ж.)'],
+    ['le boulanger','пекарь'],['la boulangère','пекарь (ж.)'],['le coiffeur','парикмахер'],['la coiffeuse','парикмахер (ж.)'],
+    ['le chauffeur','водитель'],['le policier','полицейский'],['la policière','полицейская'],['le pompier','пожарный'],
+    ["l'artiste",'артист / художник'],['le musicien','музыкант'],['la musicienne','музыкант (ж.)'],
+    ['le journaliste','журналист'],['la secrétaire','секретарь'],["l'étudiant",'студент'],["l'étudiante",'студентка']
+  ]},
+  loisirs:{ fr:'Les loisirs', ru:'Развлечения и хобби', words:[
+    ['le sport','спорт'],['le football','футбол'],['le tennis','теннис'],['la natation','плавание'],
+    ['le vélo','велосипед / велоспорт'],['la danse','танец'],['la musique','музыка'],['la chanson','песня'],
+    ['le film','фильм'],['le cinéma','кино'],['la lecture','чтение'],['le livre','книга'],['le jeu','игра'],
+    ['la photo','фотография'],['le dessin','рисование / рисунок'],['la peinture','живопись / краска'],
+    ['la cuisine','готовка / кухня'],['le voyage','путешествие'],['la promenade','прогулка'],
+    ['la randonnée','поход / прогулка'],['le jardinage','садоводство'],['le théâtre','театр'],['le musée','музей'],['le concert','концерт']
+  ]},
+  ville:{ fr:'La ville', ru:'Город', words:[
+    ['la ville','город'],['le quartier','район'],['la rue','улица'],["l'avenue",'проспект / авеню'],['la place','площадь'],
+    ['le boulevard','бульвар'],['le parc','парк'],['le jardin','сад'],['le pont','мост'],['la rivière','река'],
+    ['la gare','вокзал'],['la station','станция'],["l'arrêt",'остановка'],['le métro','метро'],['le bus','автобус'],
+    ['le tram','трамвай'],['la voiture','машина'],['le taxi','такси'],['le vélo','велосипед'],['le parking','парковка'],
+    ['le magasin','магазин'],['la banque','банк'],['la poste','почта'],["l'hôtel",'отель'],['le restaurant','ресторан']
+  ]},
+  vetements:{ fr:'Les vêtements', ru:'Одежда', words:[
+    ['le vêtement','одежда / предмет одежды'],['la chemise','рубашка'],['le tee-shirt','футболка'],['le pull','свитер'],
+    ['le pantalon','брюки'],['la jupe','юбка'],['la robe','платье'],['le manteau','пальто'],['la veste','куртка / пиджак'],
+    ['le costume','костюм'],['le short','шорты'],['le maillot de bain','купальник / плавки'],['les chaussures','обувь / туфли'],
+    ['les chaussettes','носки'],['les baskets','кроссовки'],['les bottes','сапоги'],['le chapeau','шляпа'],
+    ["l'écharpe",'шарф'],['les gants','перчатки'],['la ceinture','ремень'],['le sac','сумка'],['la taille','размер']
+  ]},
+  animaux:{ fr:'Les animaux', ru:'Животные', words:[
+    ["l'animal",'животное'],['le chien','собака'],['le chat','кошка / кот'],["l'oiseau",'птица'],['le poisson','рыба'],
+    ['la souris','мышь'],['le cheval','лошадь'],['la vache','корова'],['le cochon','свинья'],['le mouton','овца / баран'],
+    ['la chèvre','коза'],['la poule','курица'],['le coq','петух'],['le canard','утка'],['le lapin','кролик'],['le lion','лев'],
+    ['le tigre','тигр'],["l'éléphant",'слон'],['la girafe','жираф'],['le singe','обезьяна'],["l'ours",'медведь'],
+    ['le serpent','змея'],['la tortue','черепаха'],['le papillon','бабочка'],["l'abeille",'пчела']
+  ]},
+  meteo:{ fr:'La météo', ru:'Погода', words:[
+    ['la météo','погода / прогноз погоды'],['le temps','погода / время'],['le soleil','солнце'],['la pluie','дождь'],
+    ['la neige','снег'],['le vent','ветер'],['le nuage','облако'],['le ciel','небо'],["l'orage",'гроза'],
+    ['le brouillard','туман'],['la chaleur','жара / тепло'],['le froid','холод'],['la température','температура'],
+    ['le degré','градус'],['la saison','сезон / время года'],['le printemps','весна'],["l'été",'лето'],
+    ["l'automne",'осень'],["l'hiver",'зима'],['le jour','день'],['la nuit','ночь'],['le matin','утро'],
+    ['le soir','вечер'],['le parapluie','зонт'],["l'arc-en-ciel",'радуга']
+  ]},
+  apparence:{ fr:"L'apparence", ru:'Внешность', words:[
+    ["l'apparence",'внешность'],['le corps','тело'],['la tête','голова'],['le visage','лицо'],['les cheveux','волосы'],
+    ["l'œil",'глаз'],['les yeux','глаза'],['le nez','нос'],['la bouche','рот'],['les lèvres','губы'],["l'oreille",'ухо'],
+    ['les dents','зубы'],['le front','лоб'],['la joue','щека'],['le menton','подбородок'],['le cou','шея'],
+    ["l'épaule",'плечо'],['le bras','рука'],['la main','кисть руки'],['le doigt','палец'],['le dos','спина'],
+    ['la jambe','нога'],['le pied','ступня / стопа'],['la peau','кожа'],['la barbe','борода']
+  ]},
+  enville:{ fr:'Moi en ville', ru:'Я в городе', words:[
+    ['le plan','план / карта города'],['la carte','карта'],["l'adresse",'адрес'],['le numéro','номер'],
+    ['le chemin','путь / дорога'],['la direction','направление'],['la droite','правая сторона'],['la gauche','левая сторона'],
+    ['le centre-ville','центр города'],["l'entrée",'вход'],['la sortie','выход'],['le passage piéton','пешеходный переход'],
+    ['le feu','светофор / огонь'],['le trottoir','тротуар'],['le carrefour','перекрёсток'],['le rond-point','круговое движение'],
+    ['le billet','билет'],['le ticket','билет / талон'],['le guichet','касса / окошко'],["l'information",'информация / справочная'],
+    ['la station','станция'],["l'arrêt",'остановка'],['la ligne','линия / маршрут'],['le trajet','маршрут / поездка'],
+    ['la correspondance','пересадка']
+  ]},
+  nature:{ fr:'La nature', ru:'Природа', words:[
+    ['la nature','природа'],["l'arbre",'дерево'],['la fleur','цветок'],['la plante','растение'],['la feuille','лист'],
+    ["l'herbe",'трава'],['la forêt','лес'],['le bois','лес / роща'],['la montagne','гора'],['la colline','холм'],
+    ['la mer','море'],["l'océan",'океан'],['la plage','пляж'],['le lac','озеро'],['la rivière','река'],['le ciel','небо'],
+    ['le soleil','солнце'],['la lune','луна'],["l'étoile",'звезда'],['la terre','земля']
+  ]},
+  verbes:{ fr:'Les verbes essentiels', ru:'Глаголы', words:[
+    ['être','быть'],['avoir','иметь'],['faire','делать'],['aller','идти / ехать'],['venir','приходить / приезжать'],
+    ['prendre','брать / принимать'],['mettre','класть / надевать'],['dire','говорить / сказать'],['voir','видеть'],
+    ['savoir','знать / уметь'],['pouvoir','мочь'],['vouloir','хотеть'],['devoir','быть должным'],['falloir','быть необходимым'],
+    ['boire','пить'],['lire','читать'],['écrire','писать'],['sortir','выходить'],['partir','уезжать / уходить'],['dormir','спать'],
+    ['parler','говорить / разговаривать'],['aimer','любить / нравиться'],['habiter','жить / проживать'],['travailler','работать'],
+    ['étudier','учиться / изучать'],['manger','есть / кушать'],['acheter','покупать'],['chercher','искать'],['trouver','находить'],
+    ['donner','давать'],['regarder','смотреть'],['écouter','слушать'],['jouer','играть'],['porter','носить / нести'],
+    ['demander','спрашивать / просить'],['finir','заканчивать'],['choisir','выбирать']
+  ]}
+};
 
-const THEMES = [
-  {
-    id: 'maison',
-    level: 'A1 · Débutant',
-    fr: 'La maison',
-    ru: 'Дом',
-    locked: false,
-    words: [
-      { fr: 'la maison',        ru: 'дом' },
-      { fr: "l'appartement",    ru: 'квартира' },
-      { fr: 'la chambre',       ru: 'спальня' },
-      { fr: 'la cuisine',       ru: 'кухня' },
-      { fr: 'la salle de bain', ru: 'ванная комната' },
-      { fr: 'le salon',         ru: 'гостиная' },
-      { fr: 'la porte',         ru: 'дверь' },
-      { fr: 'la fenêtre',       ru: 'окно' },
-      { fr: 'le lit',           ru: 'кровать' },
-      { fr: 'la table',         ru: 'стол' },
-      { fr: 'la chaise',        ru: 'стул' },
-      { fr: 'le canapé',        ru: 'диван' },
-      { fr: 'la lampe',         ru: 'лампа' },
-      { fr: 'le tapis',         ru: 'ковёр' },
-      { fr: 'le jardin',        ru: 'сад' }
-    ]
-  },
-  /* Будущие темы — пока заглушки на главном экране */
-  { id: 'famille',    fr: 'La famille',    ru: 'Семья',    locked: true, words: [] },
-  { id: 'nourriture', fr: 'La nourriture', ru: 'Еда',      locked: true, words: [] },
-  { id: 'animaux',    fr: 'Les animaux',   ru: 'Животные', locked: true, words: [] },
-  { id: 'couleurs',   fr: 'Les couleurs',  ru: 'Цвета',    locked: true, words: [] }
-];
+const THEME_ORDER = ['maison','famille','magasins','aliments','couleurs','professions','loisirs',
+  'ville','vetements','animaux','meteo','apparence','enville','nature','verbes'];
+
+const EMOJI = { maison:'🏠', famille:'👪', magasins:'🛍️', aliments:'🥐', couleurs:'🎨',
+  professions:'💼', loisirs:'🎒', ville:'🏙️', vetements:'👕', animaux:'🦊', meteo:'🌤️',
+  apparence:'🙂', enville:'🧭', nature:'🌿', verbes:'🔤' };
+
+const THEMES = THEME_ORDER.map(id => ({
+  id, emoji:EMOJI[id], fr: RAW[id].fr, ru: RAW[id].ru,
+  words: RAW[id].words.map(([fr,ru]) => ({ fr, ru }))
+}));
+
+/* настройки игр */
+const WORDS_PER_GAME = 15;
+const WS_WORDS = 8;
+const WS_SIZE = 11;
 
 /* =========================================================
    СОСТОЯНИЕ
    ========================================================= */
-const state = {
-  theme: null,
-  gameWords: [],
-  openIndex: null,
-  solved: new Set(),
-  errors: 0,
-  locked: false
-};
+const state = { theme:null, activity:null, gameWords:[], openIndex:null, solved:new Set(), errors:0, locked:false };
+let ws = { N:0, grid:[], placed:[], selecting:false, startCell:null, curPath:[], errors:0 };
 
 /* =========================================================
    УТИЛИТЫ
    ========================================================= */
 const $ = id => document.getElementById(id);
 
-function shuffle(arr) {
+const ICON_SPEAKER = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.8a4.5 4.5 0 0 1 0 6.4"/><path d="M18.4 6a8 8 0 0 1 0 12"/></svg>';
+const ICON_CHEV = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+
+function shuffle(arr){
   const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
+  for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
-
-function show(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  $(screenId).classList.add('active');
-  window.scrollTo({ top: 0 });
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({top:0});
 }
 
-/* ----- озвучка (Web Speech API, голос fr-FR) ----- */
+/* ----- озвучка ----- */
 const speech = {
-  supported: 'speechSynthesis' in window,
-  voice: null,
-  pick() {
-    if (!this.supported) return;
-    const voices = speechSynthesis.getVoices();
-    this.voice = voices.find(v => v.lang === 'fr-FR') ||
-                 voices.find(v => v.lang && v.lang.startsWith('fr')) || null;
-  },
-  say(text, btn) {
-    if (!this.supported) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'fr-FR';
-    if (this.voice) u.voice = this.voice;
-    u.rate = 0.85;
-    if (btn) {
-      btn.classList.add('speaking');
-      u.onend = u.onerror = () => btn.classList.remove('speaking');
+  supported:'speechSynthesis' in window, voice:null,
+  prefer:['amélie','amelie','audrey','aurélie','aurelie','marie','virginie','charlotte','léa','lea','google français','thomas'],
+  pick(){
+    if(!this.supported) return;
+    const fr = speechSynthesis.getVoices().filter(x=>x.lang && x.lang.toLowerCase().startsWith('fr'));
+    for(const name of this.prefer){
+      const f = fr.find(x=>x.name.toLowerCase().includes(name));
+      if(f){ this.voice=f; return; }
     }
+    this.voice = fr.find(x=>x.lang==='fr-FR' && x.localService) || fr.find(x=>x.lang==='fr-FR') || fr[0] || null;
+  },
+  say(text,btn){
+    if(!this.supported) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR'; if(this.voice)u.voice=this.voice;
+    u.rate=0.78; u.pitch=1.08;
+    if(btn){ btn.classList.add('speaking'); u.onend=u.onerror=()=>btn.classList.remove('speaking'); }
     speechSynthesis.speak(u);
   }
 };
-if (speech.supported) {
-  speech.pick();
-  speechSynthesis.onvoiceschanged = () => speech.pick();
+if (speech.supported){ speech.pick(); speechSynthesis.onvoiceschanged=()=>speech.pick(); }
+
+/* ----- нормализация слова для сетки поиска ----- */
+const ACCENTS = {'à':'a','â':'a','ä':'a','é':'e','è':'e','ê':'e','ë':'e','î':'i','ï':'i',
+  'ô':'o','ö':'o','û':'u','ù':'u','ü':'u','ç':'c','œ':'oe','æ':'ae'};
+function gridForm(fr){
+  let s = fr.toLowerCase().trim();
+  s = s.replace(/^(le |la |les |un |une |des |du )/,'');
+  s = s.replace(/^l['']/,'');
+  if (/[\s\-]/.test(s)) return null;
+  s = s.replace(/[^a-z]/g, ch => ACCENTS[ch] !== undefined ? ACCENTS[ch] : ch);
+  s = s.toUpperCase();
+  if (!/^[A-Z]+$/.test(s)) return null;
+  if (s.length < 3 || s.length > 10) return null;
+  return s;
 }
 
 /* =========================================================
    ЭКРАН 1 — темы
    ========================================================= */
-function renderHome() {
-  const wrap = $('themes');
-  wrap.innerHTML = '';
-  THEMES.forEach(t => {
-    const li = document.createElement('li');
-    const b = document.createElement('button');
-    b.className = 'theme-row' + (t.locked ? ' locked' : '');
-    b.innerHTML = `
-      <span><span class="t-fr">${t.fr}</span> <span class="t-ru">· ${t.ru}</span></span>
-      ${t.locked ? '<span class="soon">скоро</span>' : '<span class="chev">→</span>'}`;
-    if (!t.locked) {
-      b.addEventListener('click', () => { state.theme = t; renderWords(); show('screen-words'); });
-    } else {
-      b.disabled = true;
-    }
-    li.appendChild(b);
-    wrap.appendChild(li);
-  });
-}
-
-/* =========================================================
-   ЭКРАН 2 — список слов
-   ========================================================= */
-function renderWords() {
-  const t = state.theme;
-  $('words-title').textContent = `${t.fr} · ${t.ru}`;
-  const tb = $('wordlist');
-  tb.innerHTML = '';
-  t.words.forEach(w => {
-    const tr = document.createElement('tr');
-
-    const tdAudio = document.createElement('td');
-    tdAudio.className = 'c-audio';
-    if (speech.supported) {
-      const sp = document.createElement('button');
-      sp.className = 'speaker';
-      sp.setAttribute('aria-label', 'Прослушать: ' + w.fr);
-      sp.textContent = '🔊';
-      sp.addEventListener('click', () => speech.say(w.fr, sp));
-      tdAudio.appendChild(sp);
-    }
-
-    const tdFr = document.createElement('td');
-    tdFr.className = 'w-fr';
-    tdFr.textContent = w.fr;
-
-    const tdRu = document.createElement('td');
-    tdRu.className = 'w-ru';
-    tdRu.textContent = w.ru;
-
-    tr.append(tdAudio, tdFr, tdRu);
-    tb.appendChild(tr);
-  });
-  $('audio-note').style.display = speech.supported ? '' : 'none';
-}
-
-/* =========================================================
-   ЭКРАН 3 — игра
-   ========================================================= */
-function startGame() {
-  const t = state.theme;
-  state.gameWords = shuffle(t.words).slice(0, WORDS_PER_GAME);
-  state.openIndex = null;
-  state.solved = new Set();
-  state.errors = 0;
-  state.locked = false;
-
-  $('game-title').textContent = `${t.fr} · ${t.ru}`;
-  renderBoard();
-  renderTranslations();
-  updateHud();
-  setHint('Нажмите на карточку, чтобы открыть слово.');
-  show('screen-game');
-}
-
-function renderBoard() {
-  const board = $('board');
-  board.innerHTML = '';
-  state.gameWords.forEach((w, i) => {
-    const c = document.createElement('button');
-    c.className = 'card';
-    c.dataset.index = i;
-    c.setAttribute('aria-label', 'Карточка ' + (i + 1));
-    c.innerHTML = `
-      <span class="card-inner">
-        <span class="face front">?</span>
-        <span class="face back">${w.fr}</span>
-      </span>`;
-    c.addEventListener('click', () => onCardTap(i));
-    board.appendChild(c);
-  });
-}
-
-function renderTranslations() {
-  const wrap = $('translations');
-  wrap.innerHTML = '';
-  shuffle(state.gameWords).forEach(w => {
-    const b = document.createElement('button');
-    b.className = 'trans';
-    b.textContent = w.ru;
-    b.dataset.ru = w.ru;
-    b.addEventListener('click', () => onTranslationTap(b));
+function renderHome(){
+  const wrap = $('themes'); wrap.innerHTML='';
+  THEMES.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='theme';
+    b.style.animationDelay=(i*40)+'ms';
+    b.innerHTML = `<span class="chip tint-${(i%8)+1}">${t.emoji}</span>`+
+      `<span class="t-text"><span class="t-fr">${t.fr}</span><span class="t-ru">${t.ru}</span></span>`+
+      `<span class="chev">${ICON_CHEV}</span>`;
+    b.addEventListener('click', ()=>{ state.theme=t; openActivity(); });
     wrap.appendChild(b);
   });
 }
 
-function cardEl(i) {
-  return document.querySelector(`.card[data-index="${i}"]`);
-}
-
-function onCardTap(i) {
-  if (state.locked || state.solved.has(i)) return;
-  if (state.openIndex === i) return;
-  if (state.openIndex !== null) cardEl(state.openIndex).classList.remove('open');
-  state.openIndex = i;
-  cardEl(i).classList.add('open');
-  setHint('Теперь выберите перевод ниже.');
-}
-
-function onTranslationTap(btn) {
-  if (state.locked || btn.classList.contains('done')) return;
-  if (state.openIndex === null) {
-    setHint('Сначала откройте карточку.', true);
-    return;
-  }
-  const i = state.openIndex;
-  const word = state.gameWords[i];
-  const el = cardEl(i);
-
-  if (btn.dataset.ru === word.ru) {
-    state.solved.add(i);
-    state.openIndex = null;
-    el.classList.remove('open');
-    el.classList.add('solved');
-    el.disabled = true;
-    btn.classList.add('flash-right');
-    setTimeout(() => { btn.classList.remove('flash-right'); btn.classList.add('done'); btn.disabled = true; }, 350);
-    speech.say(word.fr);
-    updateHud();
-    setHint('Верно.');
-    if (state.solved.size === state.gameWords.length) setTimeout(showResult, 900);
-  } else {
-    state.errors++;
-    state.locked = true;
-    el.classList.add('wrong');
-    btn.classList.add('flash-wrong');
-    updateHud();
-    setHint('Неверно. Попробуйте ещё раз.', true);
-    setTimeout(() => {
-      el.classList.remove('wrong');
-      btn.classList.remove('flash-wrong');
-      state.locked = false;
-      setHint('Выберите перевод ниже.');
-    }, 1200);
-  }
-}
-
-function updateHud() {
-  $('hud-progress').textContent = `${state.solved.size} из ${state.gameWords.length}`;
-  const e = $('hud-errors');
-  e.textContent = `Ошибки: ${state.errors}`;
-  e.dataset.zero = state.errors === 0 ? '1' : '0';
-  $('progress-fill').style.width =
-    (state.gameWords.length ? (state.solved.size / state.gameWords.length) * 100 : 0) + '%';
-}
-
-function setHint(text, attention = false) {
-  const h = $('hint');
-  h.textContent = text;
-  h.classList.toggle('attention', attention);
+/* =========================================================
+   ЭКРАН 2 — выбор игры
+   ========================================================= */
+function openActivity(){
+  $('activity-title').textContent = `${state.theme.fr} · ${state.theme.ru}`;
+  show('screen-activity');
 }
 
 /* =========================================================
-   ЭКРАН 4 — результат
+   ЭКРАН 3 — список слов (общий)
    ========================================================= */
-function showResult() {
-  const total = state.gameWords.length;
-  const errors = state.errors;
-  const accuracy = Math.round((total / (total + errors)) * 100);
+function renderWords(){
+  const t=state.theme;
+  $('words-title').textContent = `${t.fr} · ${t.ru}`;
+  const tb=$('wordlist'); tb.innerHTML='';
+  t.words.forEach(w=>{
+    const tr=document.createElement('tr');
+    const tdA=document.createElement('td'); tdA.className='c-audio';
+    if(speech.supported){
+      const sp=document.createElement('button'); sp.className='speaker';
+      sp.setAttribute('aria-label','Прослушать: '+w.fr); sp.innerHTML=ICON_SPEAKER;
+      sp.addEventListener('click',()=>speech.say(w.fr,sp)); tdA.appendChild(sp);
+    }
+    const tdF=document.createElement('td'); tdF.className='w-fr'; tdF.textContent=w.fr;
+    const tdR=document.createElement('td'); tdR.className='w-ru'; tdR.textContent=w.ru;
+    tr.append(tdA,tdF,tdR); tb.appendChild(tr);
+  });
+  $('audio-note').style.display = speech.supported ? '' : 'none';
+  $('start-game').textContent = state.activity==='wordsearch' ? 'Начать поиск' : 'Начать игру';
+}
 
-  let headline = 'Отличный результат';
-  if (accuracy < 100) headline = 'Тема пройдена';
-  if (accuracy < 80)  headline = 'Хорошая работа';
-  if (accuracy < 60)  headline = 'Неплохо для начала';
+/* =========================================================
+   ЭКРАН 4 — карточки
+   ========================================================= */
+function startGame(){
+  const seen=new Set(); const uniq=[];
+  for(const w of shuffle(state.theme.words)){ if(seen.has(w.ru)) continue; seen.add(w.ru); uniq.push(w); }
+  state.gameWords = uniq.slice(0, WORDS_PER_GAME);
+  state.openIndex=null; state.solved=new Set(); state.errors=0; state.locked=false;
 
-  $('result-headline').textContent = headline;
-  $('result-sub').textContent = `Тема: ${state.theme.fr} · ${state.theme.ru}`;
-  $('st-total').textContent = total;
-  $('st-correct').textContent = total;
-  $('st-errors').textContent = errors;
-  $('st-accuracy').textContent = accuracy + '%';
+  $('game-title').textContent = `${state.theme.fr} · ${state.theme.ru}`;
+  renderBoard(); renderTranslations(); updateHud();
+  setHint('Нажмите на карточку, чтобы открыть слово.');
+  show('screen-game');
+}
+function renderBoard(){
+  const board=$('board'); board.innerHTML='';
+  state.gameWords.forEach((w,i)=>{
+    const c=document.createElement('button'); c.className='card'; c.dataset.index=i;
+    c.setAttribute('aria-label','Карточка '+(i+1));
+    c.innerHTML = `<span class="card-inner"><span class="face front">?</span><span class="face back">${w.fr}</span></span>`;
+    c.addEventListener('click',()=>onCardTap(i)); board.appendChild(c);
+  });
+}
+function renderTranslations(){
+  const wrap=$('translations'); wrap.innerHTML='';
+  shuffle(state.gameWords).forEach(w=>{
+    const b=document.createElement('button'); b.className='trans'; b.textContent=w.ru; b.dataset.ru=w.ru;
+    b.addEventListener('click',()=>onTranslationTap(b)); wrap.appendChild(b);
+  });
+}
+function cardEl(i){ return document.querySelector(`.card[data-index="${i}"]`); }
+function onCardTap(i){
+  if(state.locked||state.solved.has(i)) return;
+  if(state.openIndex===i) return;
+  if(state.openIndex!==null) cardEl(state.openIndex).classList.remove('open');
+  state.openIndex=i; cardEl(i).classList.add('open');
+  setHint('Теперь выберите перевод ниже.');
+}
+function onTranslationTap(btn){
+  if(state.locked||btn.classList.contains('done')) return;
+  if(state.openIndex===null){ setHint('Сначала откройте карточку.',true); return; }
+  const i=state.openIndex, word=state.gameWords[i], el=cardEl(i);
+  if(btn.dataset.ru===word.ru){
+    state.solved.add(i); state.openIndex=null; el.classList.remove('open'); el.classList.add('solved'); el.disabled=true;
+    btn.classList.add('flash-right');
+    setTimeout(()=>{ btn.classList.remove('flash-right'); btn.classList.add('done'); btn.disabled=true; },350);
+    speech.say(word.fr); updateHud(); setHint('Верно.');
+    if(state.solved.size===state.gameWords.length) setTimeout(showResult,900);
+  }else{
+    state.errors++; state.locked=true; el.classList.add('wrong'); btn.classList.add('flash-wrong');
+    updateHud(); setHint('Неверно. Попробуйте ещё раз.',true);
+    setTimeout(()=>{ el.classList.remove('wrong'); btn.classList.remove('flash-wrong'); state.locked=false; setHint('Выберите перевод ниже.'); },1200);
+  }
+}
+function updateHud(){
+  $('hud-progress').textContent=`${state.solved.size} из ${state.gameWords.length}`;
+  const e=$('hud-errors'); e.textContent=`Ошибки: ${state.errors}`; e.dataset.zero=state.errors===0?'1':'0';
+  $('progress-fill').style.width=(state.gameWords.length?(state.solved.size/state.gameWords.length)*100:0)+'%';
+}
+function setHint(t,a=false){ const h=$('hint'); h.textContent=t; h.classList.toggle('attention',a); }
+function showResult(){
+  const total=state.gameWords.length, errors=state.errors, acc=Math.round((total/(total+errors))*100);
+  let head='Отличный результат'; if(acc<100)head='Тема пройдена'; if(acc<80)head='Хорошая работа'; if(acc<60)head='Неплохо для начала';
+  $('result-headline').textContent=head;
+  $('result-sub').textContent=`Тема: ${state.theme.fr} · ${state.theme.ru}`;
+  $('st-total').textContent=total; $('st-correct').textContent=total;
+  $('st-errors').textContent=errors; $('st-accuracy').textContent=acc+'%';
   show('screen-result');
+}
+
+/* =========================================================
+   ЭКРАН 6 — поиск слов
+   ========================================================= */
+function buildGrid(words,N){
+  const grid=Array.from({length:N},()=>Array(N).fill(null));
+  const placed=[];
+  const dirs=[[0,1],[1,0],[1,1],[-1,1]];
+  const ordered = words.slice().sort((a,b)=>b.grid.length-a.grid.length);
+  for(const w of ordered){
+    let ok=false;
+    for(let attempt=0; attempt<800 && !ok; attempt++){
+      const [dr,dc]=dirs[Math.floor(Math.random()*dirs.length)];
+      const len=w.grid.length;
+      const rMin=dr<0?(len-1):0, rMax=dr>0?(N-len):(N-1), cMax=dc>0?(N-len):(N-1);
+      if(rMax<rMin||cMax<0) continue;
+      const r0=rMin+Math.floor(Math.random()*(rMax-rMin+1));
+      const c0=Math.floor(Math.random()*(cMax+1));
+      const cells=[]; let fits=true;
+      for(let k=0;k<len;k++){ const r=r0+dr*k,c=c0+dc*k; const ch=grid[r][c];
+        if(ch!==null&&ch!==w.grid[k]){fits=false;break;} cells.push([r,c]); }
+      if(!fits) continue;
+      for(let k=0;k<len;k++){ const [r,c]=cells[k]; grid[r][c]=w.grid[k]; }
+      placed.push({...w, cells, found:false}); ok=true;
+    }
+  }
+  const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++) if(grid[r][c]===null) grid[r][c]=A[Math.floor(Math.random()*26)];
+  return {grid,placed};
+}
+function pickGridWords(elig, n){
+  const chosen=[];
+  for(const w of shuffle(elig)){
+    if(chosen.length>=n) break;
+    if(chosen.some(c => c.grid.includes(w.grid) || w.grid.includes(c.grid))) continue;
+    chosen.push(w);
+  }
+  return chosen;
+}
+function startWordSearch(){
+  const elig = state.theme.words.map(w=>({fr:w.fr, ru:w.ru, grid:gridForm(w.fr)})).filter(w=>w.grid);
+  const chosen = pickGridWords(elig, Math.min(WS_WORDS, elig.length));
+  const built = buildGrid(chosen, WS_SIZE);
+  ws = { N:WS_SIZE, grid:built.grid, placed:built.placed, selecting:false, startCell:null, curPath:[], errors:0 };
+  $('ws-title').textContent=`${state.theme.fr} · ${state.theme.ru}`;
+  renderWsGrid(); renderWsWords(); updateWsHud();
+  setWsHint('Найдите слова из списка. Проведите пальцем по буквам.');
+  show('screen-wordsearch');
+}
+function renderWsGrid(){
+  const g=$('ws-grid'); g.innerHTML='';
+  g.style.gridTemplateColumns=`repeat(${ws.N},1fr)`;
+  for(let r=0;r<ws.N;r++)for(let c=0;c<ws.N;c++){
+    const cell=document.createElement('div'); cell.className='ws-cell';
+    cell.dataset.r=r; cell.dataset.c=c; cell.textContent=ws.grid[r][c];
+    g.appendChild(cell);
+  }
+}
+function renderWsWords(){
+  const wrap=$('ws-words'); wrap.innerHTML='';
+  ws.placed.forEach(w=>{
+    const d=document.createElement('div'); d.className='ws-word'+(w.found?' found':'');
+    d.innerHTML=`<span class="fr">${w.fr}</span> <span class="ru">${w.ru}</span>`;
+    wrap.appendChild(d);
+  });
+}
+function wsCell(r,c){ return document.querySelector(`.ws-cell[data-r="${r}"][data-c="${c}"]`); }
+function clearWsSel(){ document.querySelectorAll('.ws-cell.sel').forEach(el=>el.classList.remove('sel')); }
+function linePath(r0,c0,r1,c1){
+  const adr=Math.abs(r1-r0), adc=Math.abs(c1-c0);
+  if(!(r0===r1||c0===c1||adr===adc)) return null;
+  const dr=Math.sign(r1-r0), dc=Math.sign(c1-c0), len=Math.max(adr,adc)+1, cells=[];
+  for(let k=0;k<len;k++) cells.push([r0+dr*k,c0+dc*k]);
+  return cells;
+}
+function samePath(a,b){
+  if(a.length!==b.length) return false;
+  const fwd=a.every((p,i)=>p[0]===b[i][0]&&p[1]===b[i][1]);
+  const rb=b.slice().reverse();
+  const rev=a.every((p,i)=>p[0]===rb[i][0]&&p[1]===rb[i][1]);
+  return fwd||rev;
+}
+function updateSel(r,c){
+  clearWsSel();
+  const path=linePath(ws.startCell[0],ws.startCell[1],r,c);
+  if(!path){ ws.curPath=[]; const s=wsCell(ws.startCell[0],ws.startCell[1]); if(s)s.classList.add('sel'); return; }
+  ws.curPath=path;
+  for(const [rr,cc] of path){ const el=wsCell(rr,cc); if(el)el.classList.add('sel'); }
+}
+function wsDown(e){
+  const cell=e.target.closest && e.target.closest('.ws-cell'); if(!cell) return;
+  e.preventDefault();
+  ws.selecting=true; ws.startCell=[+cell.dataset.r,+cell.dataset.c];
+  updateSel(ws.startCell[0],ws.startCell[1]);
+}
+function wsMove(e){
+  if(!ws.selecting) return;
+  const p = e.touches ? e.touches[0] : e;
+  const el = document.elementFromPoint(p.clientX,p.clientY);
+  if(!el||!el.classList.contains('ws-cell')) return;
+  e.preventDefault();
+  updateSel(+el.dataset.r,+el.dataset.c);
+}
+function wsUp(){
+  if(!ws.selecting) return;
+  ws.selecting=false;
+  const path=ws.curPath; clearWsSel(); ws.curPath=[]; ws.startCell=null;
+  if(!path||path.length<2) return;
+  const w=ws.placed.find(x=>!x.found && samePath(path,x.cells));
+  if(w){
+    w.found=true;
+    for(const [r,c] of w.cells){ const el=wsCell(r,c); if(el)el.classList.add('found'); }
+    renderWsWords(); updateWsHud(); speech.say(w.fr); setWsHint('Найдено: '+w.fr);
+    if(ws.placed.every(x=>x.found)) setTimeout(showWsResult,800);
+  }else{
+    ws.errors++; updateWsHud(); setWsHint('Здесь нет слова из списка.',true);
+  }
+}
+function updateWsHud(){
+  const found=ws.placed.filter(w=>w.found).length, total=ws.placed.length;
+  $('ws-progress').textContent=`${found} из ${total}`;
+  const e=$('ws-errors'); e.textContent=`Промахи: ${ws.errors}`; e.dataset.zero=ws.errors===0?'1':'0';
+  $('ws-fill').style.width=(total?(found/total)*100:0)+'%';
+}
+function setWsHint(t,a=false){ const h=$('ws-hint'); h.textContent=t; h.classList.toggle('attention',a); }
+function showWsResult(){
+  const total=ws.placed.length, found=ws.placed.filter(w=>w.found).length;
+  $('wsr-headline').textContent = ws.errors===0 ? 'Отличный результат' : 'Все слова найдены';
+  $('wsr-sub').textContent=`Тема: ${state.theme.fr} · ${state.theme.ru}`;
+  $('wsr-total').textContent=total; $('wsr-found').textContent=found; $('wsr-errors').textContent=ws.errors;
+  show('screen-wsresult');
 }
 
 /* =========================================================
    НАВИГАЦИЯ
    ========================================================= */
-$('back-home').addEventListener('click', () => show('screen-home'));
-$('back-words').addEventListener('click', () => { renderWords(); show('screen-words'); });
-$('start-game').addEventListener('click', startGame);
+$('back-home2').addEventListener('click', ()=>show('screen-home'));
+$('choice-cards').addEventListener('click', ()=>{ state.activity='cards'; renderWords(); show('screen-words'); });
+$('choice-ws').addEventListener('click', ()=>{ state.activity='wordsearch'; renderWords(); show('screen-words'); });
+
+$('back-activity').addEventListener('click', ()=>show('screen-activity'));
+$('start-game').addEventListener('click', ()=>{ state.activity==='wordsearch' ? startWordSearch() : startGame(); });
+
+$('back-words').addEventListener('click', ()=>{ renderWords(); show('screen-words'); });
 $('play-again').addEventListener('click', startGame);
-$('to-words').addEventListener('click', () => { renderWords(); show('screen-words'); });
-$('to-home').addEventListener('click', () => show('screen-home'));
+$('to-words').addEventListener('click', ()=>{ renderWords(); show('screen-words'); });
+$('to-home').addEventListener('click', ()=>show('screen-home'));
+
+$('back-words2').addEventListener('click', ()=>{ renderWords(); show('screen-words'); });
+$('ws-again').addEventListener('click', startWordSearch);
+$('wsr-to-words').addEventListener('click', ()=>{ renderWords(); show('screen-words'); });
+$('wsr-to-home').addEventListener('click', ()=>show('screen-home'));
+
+$('ws-grid').addEventListener('pointerdown', wsDown);
+document.addEventListener('pointermove', wsMove, {passive:false});
+document.addEventListener('pointerup', wsUp);
+$('ws-grid').addEventListener('touchstart', wsDown, {passive:false});
+document.addEventListener('touchmove', wsMove, {passive:false});
+document.addEventListener('touchend', wsUp);
 
 renderHome();
 </script>
