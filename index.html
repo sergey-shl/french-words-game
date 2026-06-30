@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Les Mots — учим французские слова</title>
-<meta name="description" content="Игры для запоминания французских слов: карточки и поиск слов.">
+<title>Les Mots — французские слова и правила чтения</title>
+<meta name="description" content="Игры для запоминания французских слов и тренировки правил чтения.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --creme:#FAF5EC;
@@ -66,7 +66,8 @@
   .btn.secondary:hover{background:#fff;box-shadow:inset 0 0 0 1.5px var(--bleu)}
   .btn + .btn{margin-top:10px}
   .btn:focus-visible,a:focus-visible,.card:focus-visible,.trans:focus-visible,
-  .speaker:focus-visible,.theme:focus-visible,.choice:focus-visible,.back:focus-visible{
+  .speaker:focus-visible,.theme:focus-visible,.choice:focus-visible,.back:focus-visible,
+  .reading-option:focus-visible,.sound-chip:focus-visible,.letter-pick:focus-visible{
     outline:3px solid var(--focus);outline-offset:2px}
 
   .topbar{padding-top:16px}
@@ -190,6 +191,46 @@
   .stats td.val.red{color:var(--rouge)}
   .stats td.val.blue{color:var(--bleu)}
 
+  /* ---------- правила чтения ---------- */
+  .reading-feature{margin-bottom:22px;background:linear-gradient(135deg,#fff 0%,#F7E9DA 100%);border-color:rgba(201,102,63,.18)}
+  .reading-feature .chip{width:58px;height:58px;background:var(--terre);color:#fff;font-family:'Alegreya',serif;font-weight:800;font-size:27px}
+  .reading-feature .t-fr{font-size:22px}
+  .reading-kicker{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--terre);margin-bottom:2px}
+  .reading-menu{display:grid;gap:12px;margin-top:18px}
+  .reading-menu .choice{margin-top:0}
+  .reading-stage{padding:18px 0 8px}
+  .reading-card{background:var(--surface);border:1px solid var(--hair);border-radius:22px;padding:22px 18px;box-shadow:var(--shadow-soft);margin:16px 0}
+  .reading-word{font-family:'Alegreya',serif;font-size:44px;font-weight:800;color:var(--bleu);text-align:center;line-height:1.1;margin:8px 0 20px;letter-spacing:.02em}
+  .reading-word .focus-letter{color:var(--terre);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+  .reading-question{text-align:center;font-size:16px;color:var(--encre-soft);font-weight:700;margin:0 0 16px}
+  .reading-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .reading-option{min-height:54px;border:1.5px solid rgba(46,80,119,.18);border-radius:15px;background:#fff;color:var(--bleu);font:800 16px 'Nunito',sans-serif;cursor:pointer;padding:12px;transition:.15s}
+  .reading-option:hover{border-color:var(--bleu);transform:translateY(-1px)}
+  .reading-option.correct{background:var(--vert-bg);border-color:var(--vert);color:var(--vert)}
+  .reading-option.wrong{background:var(--rouge-bg);border-color:var(--rouge);color:var(--rouge)}
+  .reading-option:disabled{cursor:default;transform:none}
+  .reading-feedback{min-height:48px;border-radius:14px;padding:12px 14px;margin:12px 0 0;font-size:14.5px;font-weight:700;display:none}
+  .reading-feedback.show{display:block}
+  .reading-feedback.good{background:var(--vert-bg);color:var(--vert)}
+  .reading-feedback.bad{background:var(--rouge-bg);color:var(--rouge)}
+  .sound-target{min-height:62px;border:2px dashed rgba(46,80,119,.22);border-radius:16px;padding:10px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .sound-target.empty::before{content:'Соберите звучание здесь';color:var(--encre-soft);font-size:14px;font-weight:700}
+  .sound-bank{display:flex;justify-content:center;flex-wrap:wrap;gap:9px}
+  .sound-chip{border:none;border-radius:12px;background:#F1E7D6;color:var(--bleu);font:800 19px 'Nunito',sans-serif;min-width:48px;min-height:48px;padding:9px 13px;cursor:pointer}
+  .sound-chip.selected{background:var(--bleu);color:#fff}
+  .sound-chip:disabled{opacity:.35;cursor:default}
+  .reading-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .reading-actions .btn{margin:0;min-width:0;padding-left:12px;padding-right:12px}
+  .text-game{font-family:'Alegreya',serif;font-size:24px;line-height:1.85;color:var(--encre);text-align:left}
+  .text-word{display:inline-block;white-space:nowrap;margin-right:.18em}
+  .letter-pick{display:inline-block;border:none;background:transparent;color:inherit;font:inherit;line-height:1;padding:2px 1px;border-radius:5px;cursor:pointer}
+  .letter-pick:hover{background:#F1E7D6}
+  .letter-pick.picked{background:var(--bleu);color:#fff}
+  .letter-pick.extra{background:var(--rouge);color:#fff}
+  .letter-pick.found{background:var(--vert);color:#fff}
+  .rule-note{font-size:13.5px;color:var(--encre-soft);font-weight:700;margin:12px 0 0}
+  @media (max-width:420px){.reading-word{font-size:38px}.reading-card{padding:19px 14px}.text-game{font-size:21px}.reading-options{grid-template-columns:1fr}}
+
   @media (prefers-reduced-motion:reduce){.theme{animation:none;opacity:1;transform:none}*{transition:none!important}}
 </style>
 </head>
@@ -212,9 +253,15 @@
     <section class="hero">
       <span class="eyebrow">Французский · уровень A1</span>
       <h1>С чего начнём сегодня?</h1>
-      <p class="lead">Выберите тему: сначала изучите слова, затем закрепите их в игре.</p>
+      <p class="lead">Тренируйте лексику и учитесь уверенно читать по-французски.</p>
     </section>
-    <div class="section-label">Темы</div>
+    <div class="section-label">Правила чтения</div>
+    <button class="theme reading-feature" id="open-reading">
+      <span class="chip">Aa</span>
+      <span class="t-text"><span class="reading-kicker">4 новые игры</span><span class="t-fr">Les règles de lecture</span><span class="t-ru">Игры по правилам чтения</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+    <div class="section-label">Слова по темам</div>
     <div class="themes" id="themes"></div>
   </section>
 
@@ -305,6 +352,63 @@
     <button class="btn" id="ws-again">Играть ещё раз</button>
     <button class="btn secondary" id="wsr-to-words">Вернуться к списку слов</button>
     <button class="btn secondary" id="wsr-to-home">Выбрать другую тему</button>
+  </section>
+
+  <!-- ЭКРАН 8: игры по правилам чтения -->
+  <section class="screen" id="screen-reading-menu">
+    <div class="topbar"><button class="back" id="reading-to-home">← На главную</button></div>
+    <section class="hero">
+      <span class="eyebrow">Les règles de lecture</span>
+      <h1>Игры по правилам чтения</h1>
+      <p class="lead">Четыре короткие тренировки по правилам из учебного материала.</p>
+    </section>
+    <div class="reading-menu">
+      <button class="choice" data-reading-game="silent">
+        <span class="choice-chip tint-1">🔇</span>
+        <span class="choice-text"><span class="choice-title">Звучит или молчит?</span><span class="choice-desc">Определите, читается ли выделенная буква</span></span><span class="chev">›</span>
+      </button>
+      <button class="choice" data-reading-game="reading">
+        <span class="choice-chip tint-4">👄</span>
+        <span class="choice-text"><span class="choice-title">Как читается?</span><span class="choice-desc">Выберите звук для буквы или сочетания</span></span><span class="chev">›</span>
+      </button>
+      <button class="choice" data-reading-game="sounds">
+        <span class="choice-chip tint-3">🧩</span>
+        <span class="choice-text"><span class="choice-title">Разложи по звукам</span><span class="choice-desc">Соберите звучание слова из карточек</span></span><span class="chev">›</span>
+      </button>
+      <button class="choice" data-reading-game="text">
+        <span class="choice-chip tint-6">🔎</span>
+        <span class="choice-text"><span class="choice-title">Найди немые буквы в тексте</span><span class="choice-desc">Отметьте немые окончания в отрывке</span></span><span class="chev">›</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 9: игровое поле правил чтения -->
+  <section class="screen" id="screen-reading-game">
+    <div class="topbar"><button class="back" id="reading-back">← К играм</button></div>
+    <div class="reading-stage">
+      <span class="eyebrow" id="reading-eyebrow">Правила чтения</span>
+      <h1 class="page-title" id="reading-title"></h1>
+      <p class="lead" id="reading-lead"></p>
+      <div class="hud"><span id="reading-progress">1 из 8</span><span class="errors" id="reading-errors" data-zero="1">Ошибки: 0</span></div>
+      <div class="progressbar"><div id="reading-fill"></div></div>
+      <div id="reading-game-body"></div>
+      <div class="reading-feedback" id="reading-feedback" role="status"></div>
+      <button class="btn" id="reading-next" style="display:none">Следующее задание</button>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 10: результат правил чтения -->
+  <section class="screen" id="screen-reading-result">
+    <div class="result-head"><span class="eyebrow">Результат</span><h2 id="reading-result-title">Тренировка пройдена</h2><p id="reading-result-sub"></p></div>
+    <table class="stats">
+      <tr><td>Заданий</td><td class="val" id="rr-total">0</td></tr>
+      <tr><td>Верно с первой попытки</td><td class="val green" id="rr-correct">0</td></tr>
+      <tr><td>Ошибок</td><td class="val red" id="rr-errors">0</td></tr>
+      <tr><td>Точность</td><td class="val blue" id="rr-accuracy">0%</td></tr>
+    </table>
+    <button class="btn" id="reading-again">Играть ещё раз</button>
+    <button class="btn secondary" id="reading-result-menu">Выбрать другую игру</button>
+    <button class="btn secondary" id="reading-result-home">На главную</button>
   </section>
 
 </div>
@@ -441,6 +545,71 @@ const THEMES = THEME_ORDER.map(id => ({
   words: RAW[id].words.map(([fr,ru]) => ({ fr, ru }))
 }));
 
+/* игры по правилам чтения — примеры из приложенного учебного материала */
+const READING_META = {
+  silent:{title:'Звучит или молчит?', lead:'Определите, читается ли выделенная буква.', eyebrow:'Немые буквы'},
+  reading:{title:'Как читается?', lead:'Выберите звук для выделенной буквы или сочетания.', eyebrow:'Буквы и сочетания'},
+  sounds:{title:'Разложи по звукам', lead:'Нажимайте на карточки в порядке звучания слова.', eyebrow:'Звуковая сборка'},
+  text:{title:'Найди немые буквы в тексте', lead:'Нажмите на все немые окончания в отрывке.', eyebrow:'Чтение текста'}
+};
+const SILENT_ITEMS = [
+  {word:'Madame',focus:[5],answer:'silent',rule:'Конечная e в знаменательных словах обычно не читается.'},
+  {word:'Pascal',focus:[5],answer:'sound',rule:'Конечная l в большинстве случаев читается.'},
+  {word:'neuf',focus:[3],answer:'sound',rule:'Конечная f в слове neuf читается.'},
+  {word:'actif',focus:[4],answer:'sound',rule:'Конечная f читается.'},
+  {word:'part',focus:[3],answer:'silent',rule:'Конечная t обычно не читается.'},
+  {word:'tard',focus:[3],answer:'silent',rule:'Конечная d не читается.'},
+  {word:'parlez',focus:[5],answer:'silent',rule:'Конечная z не читается.'},
+  {word:'très',focus:[3],answer:'silent',rule:'Конечная s обычно не читается.'},
+  {word:'avec',focus:[3],answer:'sound',rule:'Конечная c после гласной читается как [к].'},
+  {word:'parc',focus:[3],answer:'sound',rule:'Конечная c после согласной читается как [к].'},
+  {word:'aller',focus:[4],answer:'silent',rule:'В инфинитивах на -er конечная r не читается.'},
+  {word:'vieux',focus:[4],answer:'silent',rule:'Конечная x обычно не читается.'},
+  {word:'six',focus:[2],answer:'sound',rule:'В отдельно произнесённом числительном six буква x звучит как [с].'},
+  {word:'dix',focus:[2],answer:'sound',rule:'В отдельно произнесённом числительном dix буква x звучит как [с].'},
+  {word:'blanc',focus:[4],answer:'silent',rule:'После носового гласного конечная c не читается.'}
+];
+const READING_ITEMS = [
+  {word:'jardin',focus:[0],answer:'ж',choices:['ж','й','г'],rule:'Буква j читается как [ж].'},
+  {word:'garçon',focus:[3],answer:'с',choices:['с','к','ш'],rule:'Буква ç читается как [с].'},
+  {word:'chaise',focus:[4],answer:'з',choices:['с','з','ш'],rule:'Одиночная s между двумя гласными читается как [з].'},
+  {word:'veste',focus:[2],answer:'с',choices:['с','з','ж'],rule:'Не между двумя гласными s читается как [с].'},
+  {word:'place',focus:[3],answer:'с',choices:['с','к','ш'],rule:'Перед e, i, y буква c читается как [с].'},
+  {word:'carte',focus:[0],answer:'к',choices:['с','к','ш'],rule:'Перед a, o, u и согласными c читается как [к].'},
+  {word:'plage',focus:[3],answer:'ж',choices:['г','ж','й'],rule:'Перед e, i, y буква g читается как [ж].'},
+  {word:'gare',focus:[0],answer:'г',choices:['г','ж','к'],rule:'Перед a, o, u и согласными g читается как [г].'},
+  {word:'Marthe',focus:[3,4],answer:'т',choices:['т','ф','з'],rule:'Сочетание th читается как [т].'},
+  {word:'marche',focus:[3,4],answer:'ш',choices:['ш','ч','к'],rule:'Сочетание ch читается как [ш].'},
+  {word:'fabrique',focus:[5,6],answer:'к',choices:['к','кв','г'],rule:'Сочетание qu читается как [к].'},
+  {word:'photo',focus:[0,1],answer:'ф',choices:['ф','п','в'],rule:'Сочетание ph читается как [ф].'},
+  {word:'guide',focus:[0,1],answer:'г',choices:['г','ж','гу'],rule:'Сочетание gu перед гласной обычно читается как [г].'},
+  {word:'espagnol',focus:[4,5],answer:'нь',choices:['нь','гн','н'],rule:'Сочетание gn передаёт мягкий звук [нь].'},
+  {word:'moi',focus:[1,2],answer:'уа',choices:['уа','ои','у'],rule:'Сочетание oi произносится как [уа].'},
+  {word:'restaurant',focus:[4,5],answer:'о',choices:['о','ау','у'],rule:'Сочетание au произносится как [о].'},
+  {word:'pourquoi',focus:[1,2],answer:'у',choices:['у','оу','о'],rule:'Сочетание ou произносится как [у].'},
+  {word:'beaucoup',focus:[1,2,3],answer:'о',choices:['о','эо','ау'],rule:'Сочетание eau произносится как [о].'}
+];
+const SOUND_ITEMS = [
+  {word:'moi',sounds:['м','уа'],rule:'oi → [уа]'},
+  {word:'photo',sounds:['ф','о','т','о'],rule:'ph → [ф]'},
+  {word:'marche',sounds:['м','а','р','ш'],rule:'ch → [ш], конечная e не читается'},
+  {word:'beaucoup',sounds:['б','о','к','у'],rule:'eau → [о], ou → [у], конечная p не читается'},
+  {word:'fille',sounds:['ф','и','й'],rule:'ill → [й], конечная e не читается'},
+  {word:'guide',sounds:['г','и','д'],rule:'gu → [г], конечная e не читается'},
+  {word:'espagnol',sounds:['э','с','п','а','нь','о','л'],rule:'gn → мягкий [нь], конечная l читается'},
+  {word:'pourquoi',sounds:['п','у','р','к','уа'],rule:'ou → [у], qu → [к], oi → [уа]'}
+];
+const TEXT_EXCERPT = {
+  title:'Au parc',
+  note:'Отмечайте немые окончания. Не выбирайте n/m, если они образуют носовой гласный.',
+  words:[
+    {t:'Elle',s:[3]},{t:'part',s:[3]},{t:'au',s:[]},{t:'parc',s:[]},{t:'avec',s:[]},{t:'sa',s:[]},{t:'veste.',s:[4]},
+    {t:'Il',s:[]},{t:'fait',s:[3]},{t:'frais',s:[4]},{t:'mais',s:[3]},{t:'le',s:[]},{t:'soleil',s:[]},{t:'brille.',s:[5]},
+    {t:'Une',s:[2]},{t:'fille',s:[4]},{t:'regarde',s:[6]},{t:'la',s:[]},{t:'presse',s:[5]},{t:'sur',s:[]},{t:'un',s:[]},{t:'banc.',s:[3]},
+    {t:'Un',s:[]},{t:'garçon',s:[]},{t:'dit',s:[2]},{t:'Parlez',s:[5]},{t:'doucement,',s:[8]},{t:"s'il",s:[]},{t:'vous',s:[3]},{t:'plaît !',s:[4]}
+  ]
+};
+
 /* настройки игр */
 const WORDS_PER_GAME = 15;
 const WS_WORDS = 8;
@@ -451,6 +620,7 @@ const WS_SIZE = 11;
    ========================================================= */
 const state = { theme:null, activity:null, gameWords:[], openIndex:null, solved:new Set(), errors:0, locked:false };
 let ws = { N:0, grid:[], placed:[], selecting:false, startCell:null, curPath:[], errors:0 };
+let readingState = {mode:null,items:[],index:0,errors:0,correctFirst:0,missed:false,answered:false,selected:[],textSelected:new Set()};
 
 /* =========================================================
    УТИЛИТЫ
@@ -762,6 +932,184 @@ function showWsResult(){
 }
 
 /* =========================================================
+   ИГРЫ ПО ПРАВИЛАМ ЧТЕНИЯ
+   ========================================================= */
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function focusWord(item){
+  return Array.from(item.word).map((ch,i)=>item.focus.includes(i)?`<span class="focus-letter">${escapeHtml(ch)}</span>`:escapeHtml(ch)).join('');
+}
+function setReadingFeedback(text,type='good'){
+  const el=$('reading-feedback');
+  el.textContent=text; el.className=`reading-feedback show ${type}`;
+}
+function clearReadingFeedback(){
+  const el=$('reading-feedback'); el.textContent=''; el.className='reading-feedback';
+}
+function readingTotal(){ return readingState.items.length; }
+function updateReadingHud(){
+  const total=readingTotal();
+  $('reading-progress').textContent=`${Math.min(readingState.index+1,total)} из ${total}`;
+  const e=$('reading-errors'); e.textContent=`Ошибки: ${readingState.errors}`; e.dataset.zero=readingState.errors===0?'1':'0';
+  const done=readingState.index+(readingState.answered?1:0);
+  $('reading-fill').style.width=(total?(done/total)*100:0)+'%';
+}
+function startReadingGame(mode){
+  const meta=READING_META[mode];
+  const items = mode==='silent' ? shuffle(SILENT_ITEMS).slice(0,10)
+    : mode==='reading' ? shuffle(READING_ITEMS).slice(0,10)
+    : mode==='sounds' ? shuffle(SOUND_ITEMS)
+    : [TEXT_EXCERPT];
+  readingState={mode,items,index:0,errors:0,correctFirst:0,missed:false,answered:false,selected:[],textSelected:new Set()};
+  $('reading-eyebrow').textContent=meta.eyebrow;
+  $('reading-title').textContent=meta.title;
+  $('reading-lead').textContent=meta.lead;
+  show('screen-reading-game');
+  renderReadingQuestion();
+}
+function renderReadingQuestion(){
+  readingState.missed=false; readingState.answered=false; readingState.selected=[]; readingState.textSelected=new Set();
+  $('reading-next').style.display='none'; clearReadingFeedback(); updateReadingHud();
+  if(readingState.mode==='silent') renderChoiceQuestion(true);
+  else if(readingState.mode==='reading') renderChoiceQuestion(false);
+  else if(readingState.mode==='sounds') renderSoundQuestion();
+  else renderTextQuestion();
+}
+function renderChoiceQuestion(isSilent){
+  const item=readingState.items[readingState.index];
+  const choices=isSilent
+    ? [{v:'sound',label:'🔊 Звучит'},{v:'silent',label:'🔇 Молчит'}]
+    : shuffle(item.choices).map(v=>({v,label:`[${v}]`}));
+  $('reading-game-body').innerHTML=`<div class="reading-card">
+    <div class="reading-word">${focusWord(item)}</div>
+    <p class="reading-question">${isSilent?'Выделенная буква читается?':'Как звучит выделенная часть?'}</p>
+    <div class="reading-options">${choices.map(c=>`<button class="reading-option" data-reading-answer="${escapeHtml(c.v)}">${escapeHtml(c.label)}</button>`).join('')}</div>
+  </div>`;
+  document.querySelectorAll('[data-reading-answer]').forEach(btn=>btn.addEventListener('click',()=>answerReadingChoice(btn,item)));
+}
+function answerReadingChoice(btn,item){
+  if(readingState.answered) return;
+  const chosen=btn.dataset.readingAnswer;
+  const ok=chosen===item.answer;
+  document.querySelectorAll('[data-reading-answer]').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.readingAnswer===item.answer)b.classList.add('correct');
+  });
+  if(!ok){
+    btn.classList.add('wrong'); readingState.errors++; readingState.missed=true;
+    setReadingFeedback(`Пока нет. ${item.rule}`,'bad');
+  }else{
+    readingState.correctFirst++; setReadingFeedback(`Верно! ${item.rule}`,'good');
+  }
+  readingState.answered=true; speech.say(item.word); updateReadingHud();
+  const next=$('reading-next'); next.textContent=readingState.index===readingTotal()-1?'Показать результат':'Следующее задание'; next.style.display='';
+}
+function renderSoundQuestion(){
+  const item=readingState.items[readingState.index];
+  readingState.soundTokens=shuffle(item.sounds.map((label,i)=>({id:`${i}-${Math.random().toString(36).slice(2)}`,label})));
+  $('reading-game-body').innerHTML=`<div class="reading-card">
+    <div class="reading-word">${escapeHtml(item.word)}</div>
+    <p class="reading-question">Соберите приблизительное звучание слова</p>
+    <div class="sound-target empty" id="sound-target"></div>
+    <div class="sound-bank" id="sound-bank">${readingState.soundTokens.map(t=>`<button class="sound-chip" data-sound-id="${t.id}">${escapeHtml(t.label)}</button>`).join('')}</div>
+    <p class="rule-note">Звуки даны русскими буквами — это подсказка для начинающих, а не строгая транскрипция.</p>
+    <div class="reading-actions"><button class="btn secondary" id="sound-reset">Сбросить</button><button class="btn" id="sound-check">Проверить</button></div>
+  </div>`;
+  document.querySelectorAll('[data-sound-id]').forEach(btn=>btn.addEventListener('click',()=>{
+    const token=readingState.soundTokens.find(t=>t.id===btn.dataset.soundId); if(!token)return;
+    readingState.selected.push(token); btn.disabled=true; renderSelectedSounds();
+  }));
+  $('sound-reset').addEventListener('click',resetSounds);
+  $('sound-check').addEventListener('click',checkSounds);
+}
+function renderSelectedSounds(){
+  const target=$('sound-target'); if(!target)return;
+  target.classList.toggle('empty',readingState.selected.length===0);
+  target.innerHTML='';
+  readingState.selected.forEach((token,i)=>{
+    const b=document.createElement('button'); b.className='sound-chip selected'; b.textContent=token.label; b.setAttribute('aria-label','Убрать звук '+token.label);
+    b.addEventListener('click',()=>{
+      readingState.selected.splice(i,1);
+      const source=document.querySelector(`[data-sound-id="${token.id}"]`); if(source)source.disabled=false;
+      renderSelectedSounds();
+    }); target.appendChild(b);
+  });
+}
+function resetSounds(){
+  readingState.selected=[];
+  document.querySelectorAll('[data-sound-id]').forEach(b=>b.disabled=false);
+  renderSelectedSounds(); clearReadingFeedback();
+}
+function checkSounds(){
+  if(readingState.answered)return;
+  const item=readingState.items[readingState.index];
+  if(readingState.selected.length!==item.sounds.length){setReadingFeedback('Используйте все карточки.','bad');return;}
+  const ok=readingState.selected.every((t,i)=>t.label===item.sounds[i]);
+  if(!ok){readingState.errors++;readingState.missed=true;updateReadingHud();setReadingFeedback('Порядок пока не совпал. Нажмите на звук сверху, чтобы вернуть его.','bad');return;}
+  if(!readingState.missed)readingState.correctFirst++;
+  readingState.answered=true; speech.say(item.word); updateReadingHud();
+  document.querySelectorAll('.sound-chip').forEach(b=>b.disabled=true);
+  setReadingFeedback(`Верно! ${item.rule}`,'good');
+  const next=$('reading-next'); next.textContent=readingState.index===readingTotal()-1?'Показать результат':'Следующее задание'; next.style.display='';
+}
+function renderTextQuestion(){
+  const item=TEXT_EXCERPT;
+  const html=item.words.map((word,wi)=>`<span class="text-word">${Array.from(word.t).map((ch,ci)=>{
+    const isLetter=/[A-Za-zÀ-ÿŒœÇç]/.test(ch);
+    return isLetter?`<button class="letter-pick" data-letter-key="${wi}:${ci}" aria-label="Буква ${escapeHtml(ch)} в слове ${escapeHtml(word.t)}">${escapeHtml(ch)}</button>`:`<span>${escapeHtml(ch)}</span>`;
+  }).join('')}</span>`).join(' ');
+  $('reading-game-body').innerHTML=`<div class="reading-card">
+    <p class="reading-question">Текст 2 — ${escapeHtml(item.title)}</p>
+    <div class="text-game">${html}</div>
+    <p class="rule-note">${escapeHtml(item.note)}</p>
+    <button class="btn" id="text-check">Проверить</button>
+  </div>`;
+  document.querySelectorAll('[data-letter-key]').forEach(btn=>btn.addEventListener('click',()=>{
+    if(readingState.answered)return;
+    const key=btn.dataset.letterKey;
+    if(readingState.textSelected.has(key))readingState.textSelected.delete(key);else readingState.textSelected.add(key);
+    btn.classList.toggle('picked',readingState.textSelected.has(key)); btn.classList.remove('extra');
+  }));
+  $('text-check').addEventListener('click',checkTextLetters);
+}
+function textTargets(){
+  const target=new Set();
+  TEXT_EXCERPT.words.forEach((word,wi)=>word.s.forEach(ci=>target.add(`${wi}:${ci}`)));
+  return target;
+}
+function checkTextLetters(){
+  if(readingState.answered)return;
+  const target=textTargets(), selected=readingState.textSelected;
+  document.querySelectorAll('[data-letter-key]').forEach(b=>b.classList.remove('extra'));
+  const ok=selected.size===target.size&&[...target].every(k=>selected.has(k));
+  if(!ok){
+    readingState.errors++; readingState.missed=true; updateReadingHud();
+    [...selected].filter(k=>!target.has(k)).forEach(k=>{const b=document.querySelector(`[data-letter-key="${k}"]`);if(b)b.classList.add('extra');});
+    const right=[...selected].filter(k=>target.has(k)).length;
+    setReadingFeedback(`Найдено верно: ${right}. Лишние буквы отмечены красным — попробуйте ещё раз.`,'bad'); return;
+  }
+  if(!readingState.missed)readingState.correctFirst++;
+  readingState.answered=true; updateReadingHud();
+  target.forEach(k=>{const b=document.querySelector(`[data-letter-key="${k}"]`);if(b){b.classList.remove('picked');b.classList.add('found');}});
+  document.querySelectorAll('[data-letter-key]').forEach(b=>b.disabled=true);
+  setReadingFeedback('Отлично! Все немые окончания найдены. Конечные e, t, s, z и некоторые c не произносятся.','good');
+  const next=$('reading-next'); next.textContent='Показать результат'; next.style.display='';
+}
+function nextReadingQuestion(){
+  if(!readingState.answered)return;
+  if(readingState.index>=readingTotal()-1){showReadingResult();return;}
+  readingState.index++; renderReadingQuestion(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function showReadingResult(){
+  const total=readingTotal(), errors=readingState.errors, accuracy=Math.round(readingState.correctFirst/total*100);
+  $('reading-result-title').textContent=accuracy===100?'Без единой ошибки!':accuracy>=70?'Отличная тренировка':'Хорошее начало';
+  $('reading-result-sub').textContent=READING_META[readingState.mode].title;
+  $('rr-total').textContent=total; $('rr-correct').textContent=readingState.correctFirst; $('rr-errors').textContent=errors; $('rr-accuracy').textContent=accuracy+'%';
+  show('screen-reading-result');
+}
+
+/* =========================================================
    НАВИГАЦИЯ
    ========================================================= */
 $('back-home2').addEventListener('click', ()=>show('screen-home'));
@@ -787,6 +1135,15 @@ document.addEventListener('pointerup', wsUp);
 $('ws-grid').addEventListener('touchstart', wsDown, {passive:false});
 document.addEventListener('touchmove', wsMove, {passive:false});
 document.addEventListener('touchend', wsUp);
+
+$('open-reading').addEventListener('click',()=>show('screen-reading-menu'));
+$('reading-to-home').addEventListener('click',()=>show('screen-home'));
+$('reading-back').addEventListener('click',()=>show('screen-reading-menu'));
+document.querySelectorAll('[data-reading-game]').forEach(btn=>btn.addEventListener('click',()=>startReadingGame(btn.dataset.readingGame)));
+$('reading-next').addEventListener('click',nextReadingQuestion);
+$('reading-again').addEventListener('click',()=>startReadingGame(readingState.mode));
+$('reading-result-menu').addEventListener('click',()=>show('screen-reading-menu'));
+$('reading-result-home').addEventListener('click',()=>show('screen-home'));
 
 renderHome();
 </script>
