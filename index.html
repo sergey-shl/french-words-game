@@ -208,6 +208,73 @@
   .stats td.val.blue{color:var(--bleu)}
 
   @media (prefers-reduced-motion:reduce){.theme{animation:none;opacity:1;transform:none}*{transition:none!important}}
+
+  /* ====================== ПРАВИЛА ЧТЕНИЯ ====================== */
+  .rr-stage{margin:6px 0 4px}
+  .rr-word{font-family:'Alegreya',serif;font-weight:800;font-size:clamp(38px,12vw,56px);color:var(--encre);
+    text-align:center;line-height:1.05;letter-spacing:-.01em;margin:18px 0 6px;word-break:break-word}
+  .rr-word .hi{background:rgba(201,102,63,.16);color:var(--terre);border-radius:8px;padding:0 .04em;
+    box-shadow:0 0 0 1.5px rgba(201,102,63,.35)}
+  .rr-question{text-align:center;color:var(--encre-soft);font-weight:700;font-size:16px;margin:0 0 16px}
+
+  .rr-opts{display:grid;gap:10px}
+  .rr-opts.two{grid-template-columns:1fr 1fr}
+  .rr-opts.grid{grid-template-columns:1fr 1fr}
+  .rr-opt{min-height:54px;border:1px solid var(--hair);border-radius:16px;cursor:pointer;background:var(--surface);
+    color:var(--encre);font-family:inherit;font-size:18px;font-weight:800;box-shadow:var(--shadow-soft);
+    display:flex;align-items:center;justify-content:center;gap:6px;transition:background .12s,box-shadow .12s,transform .1s,color .12s}
+  .rr-opt:not(:disabled):hover{background:#fff;box-shadow:var(--shadow-lift)}
+  .rr-opt:not(:disabled):active{transform:scale(.98)}
+  .rr-opt .br{color:var(--encre-soft);font-weight:700}
+  .rr-opt.ok{background:var(--vert);color:#fff;border-color:var(--vert);box-shadow:none}
+  .rr-opt.no{background:var(--rouge);color:#fff;border-color:var(--rouge);box-shadow:none}
+  .rr-opt:disabled{cursor:default}
+
+  .rr-explain{margin:16px 0 4px;background:var(--surface);border:1px solid var(--hair);border-left:3px solid var(--terre);
+    border-radius:12px;padding:13px 15px;font-size:15px;font-weight:600;color:var(--encre);line-height:1.45;box-shadow:var(--shadow-soft)}
+  .rr-explain[hidden]{display:none}
+  .rr-explain .tag{display:block;font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+  .rr-explain.good .tag{color:var(--vert)}
+  .rr-explain.bad .tag{color:var(--rouge)}
+
+  /* меню упражнений */
+  .rr-menu .choice-chip{background:#F1E7D6;color:var(--terre)}
+
+  /* сортировка по звукам */
+  .rr-sort-area{touch-action:none;margin-top:4px}
+  .rr-bins{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .rr-bin{background:var(--surface);border:1.5px dashed rgba(46,80,119,.30);border-radius:18px;
+    min-height:150px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:10px;
+    transition:border-color .15s,background .15s}
+  .rr-bin.over{border-color:var(--bleu);background:#F3F7FB;border-style:solid}
+  .rr-bin-sound{width:46px;height:46px;flex:0 0 auto;border-radius:50%;background:#DDE6F0;color:var(--bleu);
+    display:flex;align-items:center;justify-content:center;font-family:'Alegreya',serif;font-weight:800;font-size:22px}
+  .rr-bin-drop{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;align-content:flex-start;width:100%}
+  .rr-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:48px}
+  .rr-chip{border:1px solid var(--hair);border-radius:999px;background:var(--surface);color:var(--bleu);
+    font-family:'Alegreya',serif;font-weight:700;font-size:18px;padding:9px 16px;box-shadow:var(--shadow-soft);
+    cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}
+  .rr-chip .hi{color:var(--terre)}
+  .rr-chip.dragging-src{opacity:.35}
+  .rr-chip.placed{background:var(--vert-bg);color:var(--vert);box-shadow:none;border-color:var(--vert);cursor:default;font-size:16px;padding:7px 13px}
+  .rr-chip.placed .hi{color:var(--vert)}
+  .rr-chip.shake{animation:shake-x .4s ease}
+  @keyframes shake-x{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .rr-chip-clone{position:fixed;z-index:50;pointer-events:none;box-shadow:var(--shadow-lift);
+    background:var(--surface);border:1px solid var(--bleu);border-radius:999px;color:var(--bleu);
+    font-family:'Alegreya',serif;font-weight:700;font-size:18px;padding:9px 16px;cursor:grabbing}
+  .rr-chip-clone .hi{color:var(--terre)}
+
+  /* немые буквы в тексте */
+  .rr-textcard{background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:22px 18px;
+    box-shadow:var(--shadow-soft);display:flex;align-items:center;gap:12px;margin-top:4px}
+  .rr-text{flex:1;font-family:'Alegreya',serif;font-weight:700;font-size:clamp(24px,6.5vw,32px);line-height:1.4;color:var(--encre)}
+  .rr-letter{cursor:pointer;border-radius:5px;padding:0 .02em;transition:background .12s,color .12s}
+  .rr-letter:hover{background:rgba(46,80,119,.08)}
+  .rr-letter.silent-found{color:var(--encre-soft);opacity:.55;text-decoration:line-through;text-decoration-color:var(--terre);background:none;cursor:default}
+  .rr-letter.miss{background:var(--rouge);color:#fff}
+  .rr-text-say{flex:0 0 auto}
+
 </style>
 </head>
 <body>
@@ -224,16 +291,25 @@
 
 <div class="app">
 
-  <!-- ЭКРАН 1: темы -->
+  <!-- ЭКРАН 1: главная -->
   <section class="screen active" id="screen-home">
     <section class="hero">
       <span class="eyebrow">Французский · уровень A1</span>
       <h1>С чего начнём сегодня?</h1>
-      <p class="lead">Выберите тему: сначала изучите слова, затем закрепите их в игре.</p>
+      <p class="lead">Учим слова по темам и тренируем правила чтения.</p>
     </section>
-    <div class="section-label">Темы</div>
+
+    <div class="section-label">Правила чтения</div>
+    <button class="choice rr-menu" id="open-reading">
+      <span class="choice-chip tint-5"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v15.5H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v15.5h5.5A2.5 2.5 0 0 1 20 21z"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Игры по правилам чтения</span><span class="choice-desc">Звучит или молчит · как читается · разложи по звукам · немые буквы</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+
+    <div class="section-label" style="margin-top:24px">Темы — учим слова</div>
     <div class="themes" id="themes"></div>
   </section>
+
 
   <!-- ЭКРАН 2: выбор игры -->
   <section class="screen" id="screen-activity">
@@ -323,6 +399,106 @@
     <button class="btn secondary" id="wsr-to-words">Вернуться к списку слов</button>
     <button class="btn secondary" id="wsr-to-home">Выбрать другую тему</button>
   </section>
+
+  <!-- ЧТЕНИЕ: меню упражнений -->
+  <section class="screen" id="screen-reading">
+    <div class="topbar"><button class="back" id="rr-back-home">← На главную</button></div>
+    <h1 class="page-title">Правила чтения</h1>
+    <p class="lead">Короткие игры на чтение букв и звуки.</p>
+
+    <button class="choice rr-menu" data-ex="silent">
+      <span class="choice-chip"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m17 9 4 6M21 9l-4 6"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Звучит или молчит?</span><span class="choice-desc">Решите, читается выделенная буква или нет</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+
+    <button class="choice rr-menu" data-ex="sound">
+      <span class="choice-chip"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4h3l5 4V6L6 10z"/><path d="M15.5 8.8a4.5 4.5 0 0 1 0 6.4"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Как читается?</span><span class="choice-desc">Выберите, какой звук даёт буква или сочетание</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+
+    <button class="choice rr-menu" data-ex="sort">
+      <span class="choice-chip"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Разложи по звукам</span><span class="choice-desc">Перетащите слова в корзины по звуку</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+
+    <button class="choice rr-menu" data-ex="text">
+      <span class="choice-chip"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Немые буквы в тексте</span><span class="choice-desc">Найдите буквы, которые не читаются</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+  </section>
+
+  <!-- ЧТЕНИЕ: викторина (звучит или молчит / как читается) -->
+  <section class="screen" id="screen-rr-quiz">
+    <div class="topbar"><button class="back" id="rr-quiz-back">← К упражнениям</button></div>
+    <h2 class="page-title small" id="rr-quiz-title"></h2>
+    <div class="hud">
+      <span id="rr-quiz-progress">0 из 0</span>
+      <span class="errors" id="rr-quiz-errors" data-zero="1">Ошибки: 0</span>
+    </div>
+    <div class="progressbar"><div id="rr-quiz-fill"></div></div>
+    <div class="rr-stage">
+      <div class="rr-word" id="rr-word"></div>
+      <p class="rr-question" id="rr-question"></p>
+      <div class="rr-opts" id="rr-opts"></div>
+      <div class="rr-explain" id="rr-explain" hidden></div>
+    </div>
+    <button class="btn" id="rr-next" style="display:none">Дальше →</button>
+  </section>
+
+  <!-- ЧТЕНИЕ: разложи по звукам -->
+  <section class="screen" id="screen-rr-sort">
+    <div class="topbar"><button class="back" id="rr-sort-back">← К упражнениям</button></div>
+    <h2 class="page-title small">Разложи по звукам</h2>
+    <div class="hud">
+      <span id="rr-sort-title">Раунд 1 из 3</span>
+      <span class="errors" id="rr-sort-errors" data-zero="1">Промахи: 0</span>
+    </div>
+    <div class="progressbar"><div id="rr-sort-fill"></div></div>
+    <p class="hint" id="rr-sort-hint">Перетащите слова в корзину с нужным звуком.</p>
+    <div class="rr-sort-area">
+      <div class="rr-bins" id="rr-bins"></div>
+      <div class="rr-pool" id="rr-pool"></div>
+    </div>
+  </section>
+
+  <!-- ЧТЕНИЕ: немые буквы в тексте -->
+  <section class="screen" id="screen-rr-text">
+    <div class="topbar"><button class="back" id="rr-text-back">← К упражнениям</button></div>
+    <h2 class="page-title small">Немые буквы в тексте</h2>
+    <div class="hud">
+      <span id="rr-text-title">Фраза 1 из 5</span>
+      <span class="errors" id="rr-text-errors" data-zero="1">Промахи: 0</span>
+    </div>
+    <div class="progressbar"><div id="rr-text-fill"></div></div>
+    <p class="hint" id="rr-text-hint">Нажмите на буквы, которые не читаются.</p>
+    <div class="rr-textcard">
+      <div class="rr-text" id="rr-text"></div>
+      <button class="speaker rr-text-say" id="rr-text-say" aria-label="Прослушать фразу"></button>
+    </div>
+  </section>
+
+  <!-- ЧТЕНИЕ: результат -->
+  <section class="screen" id="screen-rr-result">
+    <div class="result-head">
+      <span class="eyebrow">Результат</span>
+      <h2 id="rr-res-headline">Готово</h2>
+      <p id="rr-res-sub"></p>
+    </div>
+    <table class="stats">
+      <tr><td id="rr-res-l1">Всего</td><td class="val" id="rr-res-total">0</td></tr>
+      <tr><td id="rr-res-l2">Верно</td><td class="val green" id="rr-res-correct">0</td></tr>
+      <tr><td id="rr-res-l3">Ошибок</td><td class="val red" id="rr-res-errors">0</td></tr>
+      <tr><td>Точность</td><td class="val blue" id="rr-res-acc">0%</td></tr>
+    </table>
+    <button class="btn" id="rr-res-again">Ещё раз</button>
+    <button class="btn secondary" id="rr-res-menu">К упражнениям</button>
+    <button class="btn secondary" id="rr-res-home">На главную</button>
+  </section>
+
 
 </div>
 
@@ -870,6 +1046,310 @@ document.addEventListener('pointerup', wsUp);
 $('ws-grid').addEventListener('touchstart', wsDown, {passive:false});
 document.addEventListener('touchmove', wsMove, {passive:false});
 document.addEventListener('touchend', wsUp);
+
+/* ===== ПРАВИЛА ЧТЕНИЯ ===== */
+const RR_SILENT = [{"fr": "madame", "s": 5, "len": 1, "read": false, "why": "Конечная «e» в знаменательных словах не читается."}, {"fr": "Pascal", "s": 5, "len": 1, "read": true, "why": "Буква «l» на конце слов обычно читается."}, {"fr": "neuf", "s": 3, "len": 1, "read": true, "why": "Буква «f» на конце слов читается."}, {"fr": "actif", "s": 4, "len": 1, "read": true, "why": "Буква «f» на конце слов читается."}, {"fr": "part", "s": 3, "len": 1, "read": false, "why": "Буква «t» на конце слов обычно не читается."}, {"fr": "sculpture", "s": 4, "len": 1, "read": false, "why": "Буква «p» перед «t» часто не читается."}, {"fr": "tard", "s": 3, "len": 1, "read": false, "why": "Буква «d» на конце слов не читается."}, {"fr": "parlez", "s": 5, "len": 1, "read": false, "why": "Буква «z» на конце слова не читается."}, {"fr": "chez", "s": 3, "len": 1, "read": false, "why": "Буква «z» на конце слова не читается."}, {"fr": "très", "s": 3, "len": 1, "read": false, "why": "Буква «s» на конце слов обычно не читается."}, {"fr": "avec", "s": 3, "len": 1, "read": true, "why": "«c» на конце после согласной или чистой гласной читается как [k]."}, {"fr": "parc", "s": 3, "len": 1, "read": true, "why": "«c» на конце после согласной читается как [k]."}, {"fr": "vieux", "s": 4, "len": 1, "read": false, "why": "Буква «x» на конце слов не читается."}, {"fr": "aller", "s": 4, "len": 1, "read": false, "why": "«r» не читается в окончании -er у глаголов."}, {"fr": "cahier", "s": 5, "len": 1, "read": false, "why": "«r» не читается в окончании -ier у существительных."}, {"fr": "six", "s": 2, "len": 1, "read": true, "why": "Исключение: в числительных six и dix «x» читается как [s]."}, {"fr": "blanc", "s": 4, "len": 1, "read": false, "why": "После носового гласного конечная «c» не читается."}];
+const RR_SOUND = [{"fr": "jardin", "s": 0, "len": 1, "ans": "ж", "opts": ["ж", "дж", "г", "з"], "why": "Буква «j» читается как [ж]."}, {"fr": "garçon", "s": 3, "len": 1, "ans": "с", "opts": ["с", "к", "ц", "з"], "why": "«ç» всегда читается как [с]."}, {"fr": "chaise", "s": 4, "len": 1, "ans": "з", "opts": ["з", "с", "ш", "ж"], "why": "«s» между двумя гласными читается как [з]."}, {"fr": "presse", "s": 3, "len": 2, "ans": "с", "opts": ["с", "з", "ш", "ц"], "why": "Двойная «ss» читается как [с]."}, {"fr": "place", "s": 3, "len": 1, "ans": "с", "opts": ["с", "к", "ш", "ц"], "why": "«c» перед e, i, y читается как [с]."}, {"fr": "carte", "s": 0, "len": 1, "ans": "к", "opts": ["к", "с", "ш", "г"], "why": "Перед другими буквами «c» читается как [k]."}, {"fr": "plage", "s": 3, "len": 1, "ans": "ж", "opts": ["ж", "г", "дж", "х"], "why": "«g» перед e, i, y читается как [ж]."}, {"fr": "gare", "s": 0, "len": 1, "ans": "г", "opts": ["г", "ж", "к", "х"], "why": "В остальных случаях «g» читается как [г]."}, {"fr": "marche", "s": 3, "len": 2, "ans": "ш", "opts": ["ш", "ч", "к", "с"], "why": "Сочетание «ch» читается как [ш]."}, {"fr": "fabrique", "s": 5, "len": 2, "ans": "к", "opts": ["к", "кв", "г", "ш"], "why": "Сочетание «qu» читается как [k]."}, {"fr": "photo", "s": 0, "len": 2, "ans": "ф", "opts": ["ф", "п", "в", "х"], "why": "Сочетание «ph» читается как [ф]."}, {"fr": "guide", "s": 0, "len": 2, "ans": "г", "opts": ["г", "гв", "ж", "дж"], "why": "«gu» перед гласной обычно читается как [г]."}, {"fr": "espagnol", "s": 4, "len": 2, "ans": "нь", "opts": ["нь", "гн", "н", "ж"], "why": "Сочетание «gn» читается как мягкое [нь]."}, {"fr": "moi", "s": 1, "len": 2, "ans": "уа", "opts": ["уа", "ои", "о", "уэ"], "why": "Сочетание «oi» произносится как [уа]."}, {"fr": "restaurant", "s": 4, "len": 2, "ans": "о", "opts": ["о", "ау", "а", "у"], "why": "Сочетание «au» произносится как [о]."}, {"fr": "pourquoi", "s": 1, "len": 2, "ans": "у", "opts": ["у", "оу", "о", "ю"], "why": "Сочетание «ou» произносится как [у]."}, {"fr": "beaucoup", "s": 1, "len": 3, "ans": "о", "opts": ["о", "эау", "е", "у"], "why": "Сочетание «eau» произносится как [о]."}, {"fr": "fille", "s": 1, "len": 3, "ans": "й", "opts": ["й", "иль", "ль", "л"], "why": "Сочетания «il», «ill» дают звук [й]."}];
+const RR_SORT = [{"sounds": ["с", "к"], "words": [{"fr": "place", "bin": 0, "s": 3, "len": 1}, {"fr": "ciel", "bin": 0, "s": 0, "len": 1}, {"fr": "cinéma", "bin": 0, "s": 0, "len": 1}, {"fr": "carte", "bin": 1, "s": 0, "len": 1}, {"fr": "commode", "bin": 1, "s": 0, "len": 1}, {"fr": "avec", "bin": 1, "s": 3, "len": 1}]}, {"sounds": ["ж", "г"], "words": [{"fr": "plage", "bin": 0, "s": 3, "len": 1}, {"fr": "girafe", "bin": 0, "s": 0, "len": 1}, {"fr": "gymnastique", "bin": 0, "s": 0, "len": 1}, {"fr": "gare", "bin": 1, "s": 0, "len": 1}, {"fr": "grève", "bin": 1, "s": 0, "len": 1}, {"fr": "gants", "bin": 1, "s": 0, "len": 1}]}, {"sounds": ["з", "с"], "words": [{"fr": "chaise", "bin": 0, "s": 4, "len": 1}, {"fr": "maison", "bin": 0, "s": 3, "len": 1}, {"fr": "rose", "bin": 0, "s": 2, "len": 1}, {"fr": "veste", "bin": 1, "s": 2, "len": 1}, {"fr": "salade", "bin": 1, "s": 0, "len": 1}, {"fr": "presse", "bin": 1, "s": 3, "len": 2}]}];
+const RR_TEXT = [{"text": "Madame parle.", "silent": [5, 11]}, {"text": "Le chat part.", "silent": [6, 11]}, {"text": "Il regarde la souris.", "silent": [9, 19]}, {"text": "C'est très tard.", "silent": [3, 4, 9, 14]}, {"text": "Marie ferme la porte.", "silent": [4, 10, 19]}];
+const RR_QUIZ_PER = 12;
+let rr = {};
+
+function rrHi(fr, s, len){
+  return fr.slice(0,s) + '<span class="hi">' + fr.slice(s,s+len) + '</span>' + fr.slice(s+len);
+}
+function rrAcc(correct, errors){
+  const denom = correct + errors;
+  return denom ? Math.round(correct/denom*100) : 100;
+}
+function rrHeadline(acc){
+  if(acc>=100) return 'Отличный результат';
+  if(acc>=80)  return 'Хорошая работа';
+  if(acc>=60)  return 'Неплохо';
+  return 'Хорошее начало';
+}
+
+/* ---------- викторина: звучит или молчит / как читается ---------- */
+function startQuiz(type){
+  const pool = type==='silent' ? RR_SILENT : RR_SOUND;
+  const items = shuffle(pool).slice(0, Math.min(RR_QUIZ_PER, pool.length));
+  rr = { kind:'quiz', mode:type, items, idx:0, correct:0, errors:0, locked:false,
+         restart:()=>startQuiz(type) };
+  renderQuizItem();
+  show('screen-rr-quiz');
+}
+function renderQuizItem(){
+  const it = rr.items[rr.idx];
+  rr.locked = false;
+  $('rr-quiz-title').textContent = rr.mode==='silent' ? 'Звучит или молчит?' : 'Как читается?';
+  $('rr-quiz-progress').textContent = (rr.idx+1) + ' из ' + rr.items.length;
+  const e=$('rr-quiz-errors'); e.textContent='Ошибки: '+rr.errors; e.dataset.zero = rr.errors===0?'1':'0';
+  $('rr-quiz-fill').style.width = (rr.idx/rr.items.length*100) + '%';
+  $('rr-word').innerHTML = rrHi(it.fr, it.s, it.len);
+  $('rr-question').textContent = rr.mode==='silent'
+    ? 'Выделенная буква читается?'
+    : 'Как читается выделенная часть?';
+
+  const correct = rr.mode==='silent' ? it.read : it.ans;
+  const opts = rr.mode==='silent'
+    ? [{label:'Читается', val:true}, {label:'Не читается', val:false}]
+    : shuffle(it.opts).map(o=>({label:o, val:o}));
+
+  const box = $('rr-opts');
+  box.className = 'rr-opts ' + (rr.mode==='silent' ? 'two' : 'grid');
+  box.innerHTML = '';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='rr-opt'; b.dataset.val = String(o.val);
+    b.innerHTML = rr.mode==='silent' ? o.label : '<span class="br">[</span>'+o.label+'<span class="br">]</span>';
+    b.addEventListener('click', ()=>answerQuiz(b, o.val, correct, it));
+    box.appendChild(b);
+  });
+
+  const ex=$('rr-explain'); ex.hidden=true; ex.className='rr-explain';
+  $('rr-next').style.display='none';
+}
+function answerQuiz(btn, val, correct, it){
+  if(rr.locked) return;
+  rr.locked = true;
+  const ok = (val===correct);
+  document.querySelectorAll('#rr-opts .rr-opt').forEach(b=>{
+    b.disabled = true;
+    const bv = b.dataset.val;
+    if(bv === String(correct)) b.classList.add('ok');
+  });
+  if(!ok){ btn.classList.remove('ok'); btn.classList.add('no'); rr.errors++; }
+  else { rr.correct++; }
+
+  const ex=$('rr-explain');
+  ex.className='rr-explain ' + (ok?'good':'bad');
+  ex.innerHTML = '<span class="tag">'+(ok?'Верно':'Не совсем')+'</span>'+it.why;
+  ex.hidden=false;
+  speech.say(it.fr);
+  $('rr-next').style.display='';
+  $('rr-next').textContent = (rr.idx+1>=rr.items.length) ? 'Показать результат' : 'Дальше →';
+  const e=$('rr-quiz-errors'); e.textContent='Ошибки: '+rr.errors; e.dataset.zero = rr.errors===0?'1':'0';
+}
+function nextQuiz(){
+  rr.idx++;
+  if(rr.idx >= rr.items.length){ rrResult('quiz'); return; }
+  renderQuizItem();
+}
+
+/* ---------- разложи по звукам (drag) ---------- */
+function startSort(){
+  const rounds = shuffle(RR_SORT).map(r=>({sounds:r.sounds, words:shuffle(r.words)}));
+  const total = rounds.reduce((n,r)=>n+r.words.length, 0);
+  rr = { kind:'sort', rounds, ri:0, correct:0, errors:0, total, roundDone:0, roundTotal:0, drag:null,
+         restart:startSort };
+  loadSortRound();
+  show('screen-rr-sort');
+}
+function loadSortRound(){
+  const round = rr.rounds[rr.ri];
+  rr.roundTotal = round.words.length;
+  rr.roundDone = 0;
+  $('rr-sort-title').textContent = 'Раунд ' + (rr.ri+1) + ' из ' + rr.rounds.length;
+  const e=$('rr-sort-errors'); e.textContent='Промахи: '+rr.errors; e.dataset.zero = rr.errors===0?'1':'0';
+  $('rr-sort-fill').style.width='0%';
+  setSortHint('Перетащите слова в корзину с нужным звуком.');
+
+  const bins=$('rr-bins'); bins.innerHTML='';
+  round.sounds.forEach((snd,i)=>{
+    const bin=document.createElement('div'); bin.className='rr-bin'; bin.dataset.bin=String(i);
+    bin.innerHTML = '<div class="rr-bin-sound">'+snd+'</div><div class="rr-bin-drop"></div>';
+    bins.appendChild(bin);
+  });
+
+  const pool=$('rr-pool'); pool.innerHTML='';
+  round.words.forEach(w=>{
+    const chip=document.createElement('div');
+    chip.className='rr-chip'; chip.dataset.bin=String(w.bin); chip.dataset.fr=w.fr;
+    chip.innerHTML = rrHi(w.fr, w.s, w.len);
+    chip.addEventListener('pointerdown', e=>chipDown(e, chip));
+    pool.appendChild(chip);
+  });
+}
+function setSortHint(t,a){ const h=$('rr-sort-hint'); h.textContent=t; h.classList.toggle('attention', !!a); }
+function updateSortHud(){
+  const e=$('rr-sort-errors'); e.textContent='Промахи: '+rr.errors; e.dataset.zero = rr.errors===0?'1':'0';
+  $('rr-sort-fill').style.width = (rr.roundTotal ? rr.roundDone/rr.roundTotal*100 : 0) + '%';
+}
+function chipDown(e, chip){
+  if(chip.classList.contains('placed')) return;
+  e.preventDefault();
+  const r = chip.getBoundingClientRect();
+  const clone = chip.cloneNode(true);
+  clone.className = 'rr-chip-clone';
+  clone.style.width = r.width+'px'; clone.style.height = r.height+'px';
+  document.body.appendChild(clone);
+  rr.drag = { chip, clone, dx:e.clientX-r.left, dy:e.clientY-r.top };
+  chip.classList.add('dragging-src');
+  moveClone(e.clientX, e.clientY);
+}
+function moveClone(x,y){
+  if(!rr.drag) return;
+  rr.drag.clone.style.left = (x - rr.drag.dx)+'px';
+  rr.drag.clone.style.top  = (y - rr.drag.dy)+'px';
+}
+function binUnder(x,y){
+  if(!rr.drag) return null;
+  rr.drag.clone.style.display='none';
+  const el = document.elementFromPoint(x,y);
+  rr.drag.clone.style.display='';
+  return el && el.closest ? el.closest('.rr-bin') : null;
+}
+function chipMove(e){
+  if(!rr.drag) return;
+  e.preventDefault();
+  moveClone(e.clientX, e.clientY);
+  const bin = binUnder(e.clientX, e.clientY);
+  document.querySelectorAll('.rr-bin.over').forEach(b=>b.classList.remove('over'));
+  if(bin) bin.classList.add('over');
+}
+function chipUp(e){
+  if(!rr.drag) return;
+  const d = rr.drag; rr.drag=null;
+  const bin = binUnder(e.clientX, e.clientY);
+  d.clone.remove();
+  document.querySelectorAll('.rr-bin.over').forEach(b=>b.classList.remove('over'));
+  d.chip.classList.remove('dragging-src');
+  if(!bin) return;
+  const correctBin = +d.chip.dataset.bin;
+  if(+bin.dataset.bin === correctBin){
+    d.chip.classList.add('placed');
+    bin.querySelector('.rr-bin-drop').appendChild(d.chip);
+    rr.correct++; rr.roundDone++; updateSortHud(); speech.say(d.chip.dataset.fr);
+    setSortHint('Верно: '+d.chip.dataset.fr);
+    if(rr.roundDone >= rr.roundTotal){
+      rr.ri++;
+      if(rr.ri >= rr.rounds.length) setTimeout(()=>rrResult('sort'), 700);
+      else setTimeout(loadSortRound, 700);
+    }
+  } else {
+    rr.errors++; updateSortHud();
+    d.chip.classList.add('shake'); setTimeout(()=>d.chip.classList.remove('shake'), 400);
+    setSortHint('Не та корзина — попробуйте другую.', true);
+  }
+}
+
+/* ---------- немые буквы в тексте ---------- */
+function startText(){
+  const items = shuffle(RR_TEXT).slice();
+  const totalSilent = items.reduce((n,t)=>n+t.silent.length, 0);
+  rr = { kind:'text', items, idx:0, found:0, errors:0, totalSilent,
+         curFound:0, curSilent:0, restart:startText };
+  loadTextItem();
+  show('screen-rr-text');
+}
+function stripEnd(t){ return t.replace(/[.!?]+$/,''); }
+function loadTextItem(){
+  const it = rr.items[rr.idx];
+  rr.curFound = 0; rr.curSilent = it.silent.length;
+  $('rr-text-title').textContent = 'Фраза ' + (rr.idx+1) + ' из ' + rr.items.length;
+  const e=$('rr-text-errors'); e.textContent='Промахи: '+rr.errors; e.dataset.zero = rr.errors===0?'1':'0';
+  $('rr-text-fill').style.width='0%';
+  setTextHint('Нажмите на буквы, которые не читаются.');
+
+  const silentSet = new Set(it.silent);
+  const host=$('rr-text'); host.innerHTML='';
+  for(let i=0;i<it.text.length;i++){
+    const ch = it.text[i];
+    if(/[A-Za-zÀ-ÿ]/.test(ch)){
+      const sp=document.createElement('span');
+      sp.className='rr-letter'; sp.dataset.i=String(i); sp.textContent=ch;
+      sp.addEventListener('click', ()=>tapLetter(sp, silentSet));
+      host.appendChild(sp);
+    } else {
+      host.appendChild(document.createTextNode(ch));
+    }
+  }
+  const say=$('rr-text-say');
+  say.innerHTML = ICON_SPEAKER;
+  say.onclick = ()=>speech.say(stripEnd(it.text), say);
+  say.style.display = speech.supported ? '' : 'none';
+}
+function setTextHint(t,a){ const h=$('rr-text-hint'); h.textContent=t; h.classList.toggle('attention', !!a); }
+function tapLetter(sp, silentSet){
+  if(sp.classList.contains('silent-found')) return;
+  const i = +sp.dataset.i;
+  if(silentSet.has(i)){
+    sp.classList.add('silent-found');
+    rr.found++; rr.curFound++;
+    $('rr-text-fill').style.width = (rr.curFound/rr.curSilent*100)+'%';
+    if(rr.curFound >= rr.curSilent){
+      const it=rr.items[rr.idx];
+      speech.say(stripEnd(it.text));
+      setTextHint('Готово — все немые буквы найдены!');
+      setTimeout(nextText, 1100);
+    }
+  } else {
+    rr.errors++;
+    const e=$('rr-text-errors'); e.textContent='Промахи: '+rr.errors; e.dataset.zero='0';
+    sp.classList.add('miss'); setTimeout(()=>sp.classList.remove('miss'), 450);
+    setTextHint('Эта буква читается.', true);
+  }
+}
+function nextText(){
+  rr.idx++;
+  if(rr.idx >= rr.items.length){ rrResult('text'); return; }
+  loadTextItem();
+}
+
+/* ---------- общий экран результата ---------- */
+function rrResult(kind){
+  let total, correct, errors, name, l1='Всего', l2='Верно', l3='Ошибок';
+  if(kind==='quiz'){
+    total=rr.items.length; correct=rr.correct; errors=rr.errors;
+    name = rr.mode==='silent' ? 'Звучит или молчит?' : 'Как читается?';
+  } else if(kind==='sort'){
+    total=rr.total; correct=rr.correct; errors=rr.errors; name='Разложи по звукам';
+    l1='Слов'; l3='Промахов';
+  } else { // text
+    total=rr.totalSilent; correct=rr.found; errors=rr.errors; name='Немые буквы в тексте';
+    l1='Немых букв'; l2='Найдено'; l3='Промахов';
+  }
+  const acc = rrAcc(correct, errors);
+  $('rr-res-headline').textContent = rrHeadline(acc);
+  $('rr-res-sub').textContent = name;
+  $('rr-res-l1').textContent=l1; $('rr-res-l2').textContent=l2; $('rr-res-l3').textContent=l3;
+  $('rr-res-total').textContent=total;
+  $('rr-res-correct').textContent=correct;
+  $('rr-res-errors').textContent=errors;
+  $('rr-res-acc').textContent=acc+'%';
+  rr._restart = rr.restart;
+  show('screen-rr-result');
+}
+
+/* ---------- навигация ---------- */
+$('open-reading').addEventListener('click', ()=>show('screen-reading'));
+$('rr-back-home').addEventListener('click', ()=>show('screen-home'));
+document.querySelectorAll('#screen-reading .rr-menu').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const ex = btn.dataset.ex;
+    if(ex==='silent') startQuiz('silent');
+    else if(ex==='sound') startQuiz('sound');
+    else if(ex==='sort') startSort();
+    else if(ex==='text') startText();
+  });
+});
+$('rr-quiz-back').addEventListener('click', ()=>show('screen-reading'));
+$('rr-sort-back').addEventListener('click', ()=>show('screen-reading'));
+$('rr-text-back').addEventListener('click', ()=>show('screen-reading'));
+$('rr-next').addEventListener('click', nextQuiz);
+$('rr-res-again').addEventListener('click', ()=>{ if(rr._restart) rr._restart(); });
+$('rr-res-menu').addEventListener('click', ()=>show('screen-reading'));
+$('rr-res-home').addEventListener('click', ()=>show('screen-home'));
+
+/* drag listeners (pointer = мышь + тач на iOS Safari) */
+document.addEventListener('pointermove', chipMove, {passive:false});
+document.addEventListener('pointerup', chipUp);
+document.addEventListener('pointercancel', chipUp);
+
+/* тест-хук */
+window.__RR = { startQuiz, answerQuiz, nextQuiz, startText, tapLetter, startSort,
+  get state(){ return rr; }, RR_SILENT, RR_SOUND, RR_SORT, RR_TEXT };
+
 
 renderHome();
 </script>
