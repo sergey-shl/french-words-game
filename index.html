@@ -1293,8 +1293,8 @@ function chipMove(e){
 }
 function chipUp(e){
   if(!rr.drag) return;
+  const bin = e.type==='pointercancel' ? null : binUnder(e.clientX, e.clientY);
   const d = rr.drag; rr.drag=null;
-  const bin = binUnder(e.clientX, e.clientY);
   d.clone.remove();
   document.querySelectorAll('.rr-bin.over').forEach(b=>b.classList.remove('over'));
   d.chip.classList.remove('dragging-src');
