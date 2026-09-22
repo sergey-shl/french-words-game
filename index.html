@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Les Mots — учим французские слова</title>
-<meta name="description" content="Игры для запоминания французских слов: карточки и поиск слов.">
+<meta name="description" content="Игры для запоминания французских слов: карточки, поиск слов и пазл.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -275,6 +275,37 @@
   .rr-letter.miss{background:var(--rouge);color:#fff}
   .rr-text-say{flex:0 0 auto}
 
+  /* ====================== ПАЗЛ ====================== */
+  .pz-prompt{text-align:center;margin:14px 0 4px}
+  .pz-label{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--encre-soft)}
+  .pz-ru{font-family:'Alegreya',serif;font-weight:800;font-size:clamp(30px,9vw,42px);color:var(--encre);line-height:1.1;margin-top:6px}
+  .pz-answer{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;row-gap:10px;min-height:62px;margin:24px 0 8px}
+  .pz-slot{width:58px;height:56px;border:2px dashed rgba(46,80,119,.28);border-radius:12px;margin-left:12px}
+  .pz-answer .pz-slot:first-child{margin-left:0}
+  .pz-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 24px;min-height:60px;margin:26px 0 14px}
+  .pz-piece{--pc:#DDE6F0;--ink:var(--bleu);position:relative;overflow:visible;border:none;border-radius:12px;
+    background:var(--pc);color:var(--ink);font-family:'Alegreya',serif;font-weight:800;font-size:24px;line-height:1;
+    height:56px;min-width:58px;padding:0 15px;cursor:pointer;-webkit-user-select:none;user-select:none;
+    transition:background .15s,color .15s,opacity .2s,transform .1s}
+  .pz-piece:active{transform:scale(.96)}
+  .pz-piece:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+  /* выступ справа и выемка слева: при стыковке выступ закрывает выемку соседа */
+  .pz-piece::after{content:'';position:absolute;right:-8px;top:50%;width:16px;height:16px;margin-top:-8px;
+    border-radius:50%;background:var(--pc);z-index:2;transition:background .15s}
+  .pz-piece::before{content:'';position:absolute;left:-8px;top:50%;width:16px;height:16px;margin-top:-8px;
+    border-radius:50%;background:var(--creme);z-index:1}
+  .pz-answer .pz-piece.first::before{display:none}
+  .pz-answer .pz-piece.end::after{display:none}
+  .pz-tray .pz-piece.used{visibility:hidden}
+  .pz-tray .pz-piece.gone{opacity:.35;text-decoration:line-through;cursor:default}
+  .pz-answer.ok .pz-piece{--pc:var(--vert-bg);--ink:var(--vert);cursor:default}
+  .pz-answer.no .pz-piece{--pc:var(--rouge-bg);--ink:var(--rouge)}
+  .pz-answer.no{animation:shake-x .4s ease}
+  .pz-done{display:flex;align-items:center;justify-content:center;gap:12px;margin:6px 0 0}
+  .pz-done[hidden]{display:none}
+  .pz-done-fr{font-family:'Alegreya',serif;font-weight:700;font-size:22px;color:var(--vert)}
+  #pz-hint{text-align:center}
+
 </style>
 </head>
 <body>
@@ -324,6 +355,11 @@
     <button class="choice" id="choice-ws">
       <span class="choice-chip tint-3"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
       <span class="choice-text"><span class="choice-title">Поиск слов</span><span class="choice-desc">Найдите французские слова в сетке букв</span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>
+    <button class="choice" id="choice-pz">
+      <span class="choice-chip tint-2"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4h-4a2 2 0 1 0-4 0H4v-4a2 2 0 1 0 0-4z"/></svg></span>
+      <span class="choice-text"><span class="choice-title">Пазл</span><span class="choice-desc">Соберите слово из слогов, один кусочек лишний</span></span>
       <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
     </button>
   </section>
@@ -497,6 +533,47 @@
     <button class="btn" id="rr-res-again">Ещё раз</button>
     <button class="btn secondary" id="rr-res-menu">К упражнениям</button>
     <button class="btn secondary" id="rr-res-home">На главную</button>
+  </section>
+
+
+  <!-- ЭКРАН: пазл -->
+  <section class="screen" id="screen-puzzle">
+    <div class="topbar"><button class="back" id="pz-back">← К списку слов</button></div>
+    <h2 class="page-title small" id="pz-title"></h2>
+    <div class="hud">
+      <span id="pz-progress">Слово 1 из 1</span>
+      <span class="errors" id="pz-errors" data-zero="1">Ошибки: 0</span>
+    </div>
+    <div class="progressbar"><div id="pz-fill"></div></div>
+    <div class="pz-prompt">
+      <div class="pz-label">Соберите по-французски</div>
+      <div class="pz-ru" id="pz-ru"></div>
+    </div>
+    <div class="pz-answer" id="pz-answer"></div>
+    <div class="pz-done" id="pz-done" hidden>
+      <button class="speaker" id="pz-say" aria-label="Прослушать слово"></button>
+      <span class="pz-done-fr" id="pz-done-fr"></span>
+    </div>
+    <div class="pz-tray" id="pz-tray"></div>
+    <p class="hint" id="pz-hint">Нажимайте на кусочки по порядку. Один кусочек лишний.</p>
+    <button class="btn" id="pz-next" style="display:none">Дальше →</button>
+  </section>
+
+  <!-- ЭКРАН: итог пазла -->
+  <section class="screen" id="screen-pzresult">
+    <div class="result-head">
+      <span class="eyebrow">Пазл</span>
+      <h2 id="pzr-headline">Все слова собраны</h2>
+      <p id="pzr-sub"></p>
+    </div>
+    <table class="stats">
+      <tr><td>Слов собрано</td><td class="val green" id="pzr-total">0</td></tr>
+      <tr><td>Ошибок</td><td class="val red" id="pzr-errors">0</td></tr>
+      <tr><td>Точность</td><td class="val blue" id="pzr-acc">0%</td></tr>
+    </table>
+    <button class="btn" id="pz-again">Играть ещё раз</button>
+    <button class="btn secondary" id="pzr-to-words">Вернуться к списку слов</button>
+    <button class="btn secondary" id="pzr-to-home">Выбрать другую тему</button>
   </section>
 
 
@@ -764,6 +841,7 @@ function openActivity(){
   // «Поиск слов» доступен только если в теме есть цельные слова для сетки
   const eligible = state.theme.words.map(w=>gridForm(w.fr)).filter(Boolean).length;
   $('choice-ws').style.display = eligible >= 6 ? '' : 'none';
+  $('choice-pz').style.display = pzItems(state.theme).length >= PZ_MIN ? '' : 'none';
   show('screen-activity');
 }
 
@@ -1034,7 +1112,7 @@ $('choice-cards').addEventListener('click', ()=>{ state.activity='cards'; render
 $('choice-ws').addEventListener('click', ()=>{ state.activity='wordsearch'; renderWords(); show('screen-words'); });
 
 $('back-activity').addEventListener('click', ()=>show('screen-activity'));
-$('start-game').addEventListener('click', ()=>{ state.activity==='wordsearch' ? startWordSearch() : startGame(); });
+$('start-game').addEventListener('click', ()=>{ state.activity==='wordsearch' ? startWordSearch() : state.activity==='puzzle' ? startPuzzle() : startGame(); });
 
 $('back-words').addEventListener('click', ()=>{ renderWords(); show('screen-words'); });
 $('play-again').addEventListener('click', startGame);
@@ -1355,6 +1433,160 @@ document.addEventListener('pointercancel', chipUp);
 /* тест-хук */
 window.__RR = { startQuiz, answerQuiz, nextQuiz, startText, tapLetter, startSort,
   get state(){ return rr; }, RR_SILENT, RR_SOUND, RR_SORT, RR_TEXT };
+
+
+/* =========================================================
+   ПАЗЛ — собрать слово из слогов (один слог лишний)
+   Слоги разделены дефисом. Слово без артикля должно
+   совпадать со словом темы (артикль показывается после сборки).
+   ========================================================= */
+const PUZZLE = {
+  maison:      ['mai-son','cui-si-ne','fe-nê-tre','pla-fond','jar-din'],
+  famille:     ['fa-mil-le','frè-re','cou-si-ne','ne-veu','tan-te'],
+  magasins:    ['ma-ga-sin','phar-ma-cie','pa-nier','ven-deu-se'],
+  aliments:    ['fro-ma-ge','pois-son','pou-let','ba-na-ne','to-ma-te'],
+  couleurs:    ['cou-leur','jau-ne','mar-ron'],
+  professions: ['pro-fes-seur','mé-de-cin','cui-si-nier','coif-feur','pom-pier'],
+  loisirs:     ['mu-si-que','ci-né-ma','pein-tu-re','vo-ya-ge','pro-me-na-de'],
+  ville:       ['quar-tier','ri-viè-re','voi-tu-re','res-tau-rant','bou-le-vard'],
+  vetements:   ['che-mi-se','pan-ta-lon','man-teau','cha-peau'],
+  animaux:     ['la-pin','pa-pil-lon','ca-nard','tor-tue','mou-ton'],
+  meteo:       ['so-leil','nua-ge','sai-son','prin-temps','pa-ra-pluie'],
+  apparence:   ['vi-sa-ge','bou-che','o-reil-le','men-ton','é-pau-le'],
+  enville:     ['a-dres-se','di-rec-tion','sor-tie','trot-toir','car-re-four'],
+  nature:      ['na-tu-re','fo-rêt','mon-ta-gne','col-li-ne'],
+  verbes:      ['ve-nir','pren-dre','sa-voir','pou-voir','par-ler','tra-vail-ler','re-gar-der'],
+  nouveaux:    ['ja-mais','par-tout','re-pos','a-ven-tu-re','cou-ra-ge','vi-tes-se','san-té']
+};
+const PZ_MIN = 3;
+
+let pz = { items:[], i:0, pieces:[], answer:[], errors:0, locked:false, solved:false };
+
+function pzBare(fr){ return fr.replace(/^(le |la |les |un |une )/i,'').replace(/^l['’]/i,''); }
+function pzItems(theme){
+  return (PUZZLE[theme.id]||[]).map(s=>{
+    const syl=s.split('-'), word=syl.join('');
+    const w=theme.words.find(x=>pzBare(x.fr)===word);
+    return w ? { syl, word, fr:w.fr, ru:w.ru, key:s } : null;
+  }).filter(Boolean);
+}
+function pzDistractor(it){
+  // слог другого слова этой темы, которого нет в текущем слове
+  const bad=new Set(it.syl);
+  let pool=[];
+  pz.items.forEach(o=>{ if(o!==it) o.syl.forEach(s=>{ if(!bad.has(s)) pool.push(s); }); });
+  if(!pool.length) Object.values(PUZZLE).forEach(l=>l.forEach(s=>s.split('-').forEach(x=>{ if(!bad.has(x)) pool.push(x); })));
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function startPuzzle(){
+  pz = { items:shuffle(pzItems(state.theme)), i:0, pieces:[], answer:[], errors:0, locked:false, solved:false };
+  $('pz-title').textContent=`${state.theme.fr} · ${state.theme.ru}`;
+  pzLoad();
+  show('screen-puzzle');
+}
+function pzLoad(){
+  const it=pz.items[pz.i];
+  const raw=it.syl.map(t=>({t, extra:false})); raw.push({t:pzDistractor(it), extra:true});
+  pz.pieces=shuffle(raw).map((p,k)=>({...p, id:k, used:false}));
+  pz.answer=[]; pz.solved=false; pz.locked=false;
+  $('pz-ru').textContent=it.ru;
+  $('pz-done').hidden=true; $('pz-next').style.display='none';
+  $('pz-answer').className='pz-answer';
+  setPzHint('Нажимайте на кусочки по порядку. Один кусочек лишний.');
+  pzRender(); updatePzHud();
+}
+function pzPieceEl(p){
+  const b=document.createElement('button'); b.className='pz-piece'; b.type='button';
+  b.textContent=p.t; b.dataset.id=p.id; return b;
+}
+function pzRender(){
+  const it=pz.items[pz.i];
+  const ans=$('pz-answer'); ans.innerHTML='';
+  pz.answer.forEach((id,k)=>{
+    const b=pzPieceEl(pz.pieces[id]);
+    if(k===0) b.classList.add('first');
+    if(pz.solved && k===pz.answer.length-1) b.classList.add('end');
+    b.setAttribute('aria-label','Убрать слог '+pz.pieces[id].t);
+    b.addEventListener('click',()=>pzReturn(id));
+    ans.appendChild(b);
+  });
+  for(let k=pz.answer.length;k<it.syl.length;k++){
+    const s=document.createElement('div'); s.className='pz-slot'; ans.appendChild(s);
+  }
+  const tray=$('pz-tray'); tray.innerHTML='';
+  pz.pieces.forEach(p=>{
+    const b=pzPieceEl(p);
+    if(p.used){ b.classList.add('used'); b.disabled=true; b.setAttribute('aria-hidden','true'); }
+    if(pz.solved && p.extra){ b.classList.add('gone'); b.disabled=true; }
+    b.addEventListener('click',()=>pzTap(p.id));
+    tray.appendChild(b);
+  });
+}
+function pzTap(id){
+  const p=pz.pieces[id], it=pz.items[pz.i];
+  if(pz.locked||pz.solved||p.used||pz.answer.length>=it.syl.length) return;
+  p.used=true; pz.answer.push(id); pzRender();
+  if(pz.answer.length===it.syl.length) pzCheck();
+}
+function pzReturn(id){
+  if(pz.locked||pz.solved) return;
+  pz.answer=pz.answer.filter(x=>x!==id); pz.pieces[id].used=false; pzRender();
+}
+function pzCheck(){
+  const it=pz.items[pz.i];
+  const got=pz.answer.map(id=>pz.pieces[id].t).join('');
+  if(got===it.word){
+    pz.solved=true; pzRender();
+    $('pz-answer').classList.add('ok');
+    $('pz-done-fr').textContent=it.fr; $('pz-done').hidden=false;
+    speech.say(it.fr);
+    const last=pz.i===pz.items.length-1;
+    $('pz-next').textContent= last ? 'Результат →' : 'Дальше →';
+    $('pz-next').style.display='';
+    setPzHint('Верно!');
+  }else{
+    pz.errors++; pz.locked=true;
+    $('pz-answer').classList.add('no');
+    setPzHint('Не то слово. Попробуйте ещё раз.',true);
+    setTimeout(()=>{
+      pz.answer.forEach(id=>pz.pieces[id].used=false); pz.answer=[]; pz.locked=false;
+      $('pz-answer').className='pz-answer'; pzRender();
+      setPzHint('Нажимайте на кусочки по порядку. Один кусочек лишний.');
+    },900);
+  }
+  updatePzHud();
+}
+function pzNext(){
+  if(pz.i < pz.items.length-1){ pz.i++; pzLoad(); window.scrollTo({top:0}); }
+  else showPzResult();
+}
+function updatePzHud(){
+  const n=pz.items.length, done=pz.i+(pz.solved?1:0);
+  $('pz-progress').textContent=`Слово ${Math.min(pz.i+1,n)} из ${n}`;
+  const e=$('pz-errors'); e.textContent=`Ошибки: ${pz.errors}`; e.dataset.zero=pz.errors===0?'1':'0';
+  $('pz-fill').style.width=(n?(done/n)*100:0)+'%';
+}
+function setPzHint(t,a=false){ const h=$('pz-hint'); h.textContent=t; h.classList.toggle('attention',a); }
+function showPzResult(){
+  const n=pz.items.length, acc=Math.round(n/(n+pz.errors)*100);
+  let head='Отличный результат'; if(acc<100)head='Все слова собраны'; if(acc<70)head='Хорошая работа';
+  $('pzr-headline').textContent=head;
+  $('pzr-sub').textContent=`Тема: ${state.theme.fr} · ${state.theme.ru}`;
+  $('pzr-total').textContent=n; $('pzr-errors').textContent=pz.errors; $('pzr-acc').textContent=acc+'%';
+  show('screen-pzresult');
+}
+
+$('pz-say').innerHTML=ICON_SPEAKER;
+if(!speech.supported) $('pz-say').style.display='none';
+$('pz-say').addEventListener('click',()=>speech.say(pz.items[pz.i].fr,$('pz-say')));
+$('pz-next').addEventListener('click', pzNext);
+$('pz-back').addEventListener('click', ()=>{ renderWords(); show('screen-words'); });
+$('pz-again').addEventListener('click', startPuzzle);
+$('pzr-to-words').addEventListener('click', ()=>{ renderWords(); show('screen-words'); });
+$('pzr-to-home').addEventListener('click', ()=>show('screen-home'));
+$('choice-pz').addEventListener('click', ()=>{ state.activity='puzzle'; renderWords(); show('screen-words'); });
+
+window.__PZ = { PUZZLE, pzItems, startPuzzle, pzTap, pzReturn, pzNext, get state(){ return pz; } };
 
 
 renderHome();
