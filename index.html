@@ -118,6 +118,7 @@
   .speaker:hover{background:#EBD9C2}
   .speaker.speaking{background:var(--terre);color:#fff}
   .audio-note{font-size:14px;color:var(--encre-soft);margin:16px 0 20px;font-weight:600}
+  .home-note{margin:22px 0 0;text-align:center}
 
   /* ---------- идиомы: выражение + перевод + пример ---------- */
   #wordlist{margin-top:12px}
@@ -275,12 +276,6 @@
   .rr-letter.miss{background:var(--rouge);color:#fff}
   .rr-text-say{flex:0 0 auto}
 
-  /* ---------- сообщение об озвучке ---------- */
-  .sp-toast{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:80;
-    background:var(--encre);color:#fff;border-radius:14px;padding:12px 16px;font-size:14.5px;font-weight:700;
-    line-height:1.35;text-align:center;box-shadow:var(--shadow-lift);
-    opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
-  .sp-toast.on{opacity:1;transform:none}
 
   /* ---------- панель проверки озвучки (страница с #audio) ---------- */
   .dbg{position:fixed;inset:0;z-index:100;background:var(--creme);overflow:auto;
@@ -361,6 +356,7 @@
 
     <div class="section-label" style="margin-top:24px">Темы — учим слова</div>
     <div class="themes" id="themes"></div>
+    <p class="audio-note home-note">Если звука нет, отключите беззвучный режим на телефоне.</p>
   </section>
 
 
@@ -391,7 +387,7 @@
     <div class="topbar"><button class="back" id="back-activity">← Назад</button></div>
     <h1 class="page-title" id="words-title"></h1>
     <div id="wordlist"></div>
-    <p class="audio-note" id="audio-note">Нажмите на значок звука, чтобы услышать произношение. Если звука нет, проверьте громкость и беззвучный режим; на iPhone откройте сайт в Safari.</p>
+    <p class="audio-note" id="audio-note">Нажмите на значок звука, чтобы услышать произношение. Если звука нет, отключите беззвучный режим на телефоне.</p>
     <button class="btn" id="start-game">Начать игру</button>
   </section>
 
@@ -817,7 +813,7 @@ const BEEP='data:audio/wav;base64,UklGRjQOAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAA
    4. Всё, что происходит, записывается в журнал: открыть страницу с #audio. */
 const speech = {
   supported:'speechSynthesis' in window,
-  voice:null, warned:false, panel:null, log:[], _u:null, _w:null, _btn:null, _vkey:null,
+  voice:null, panel:null, log:[], _u:null, _w:null, _btn:null, _vkey:null,
   prefer:['audrey','aurélie','aurelie','amélie','amelie','marie','virginie','charlotte','léa','lea','google français','thomas'],
   pick(){
     if(!this.supported) return;
@@ -834,15 +830,6 @@ const speech = {
     this.log.push(new Date().toLocaleTimeString('ru-RU')+'  '+ev);
     if(this.log.length>30) this.log.shift();
     if(this.panel) this.render();
-  },
-  hint(){
-    if(this.warned) return;
-    this.warned = true;
-    const d=document.createElement('div'); d.className='sp-toast';
-    d.textContent='Звук не запустился. Проверьте громкость и беззвучный режим; на iPhone откройте сайт в Safari.';
-    document.body.appendChild(d);
-    setTimeout(()=>d.classList.add('on'),20);
-    setTimeout(()=>{ d.classList.remove('on'); setTimeout(()=>d.remove(),300); },7000);
   },
   say(text,btn,voice){
     if(!this.supported || !text) return;
@@ -862,12 +849,11 @@ const speech = {
       u.onstart = ()=>{ started=true; this.note('зазвучало: '+text); };
       u.onend   = ()=>{ if(btn) btn.classList.remove('speaking');
                         this.note(started ? 'закончило: '+text
-                                          : 'ЗАКОНЧИЛО, НЕ НАЧАВ ЗВУЧАТЬ — похоже, звук отключён');
-                        if(!started) this.hint(); };
+                                          : 'ЗАКОНЧИЛО, НЕ НАЧАВ ЗВУЧАТЬ — похоже, звук отключён'); };
       u.onerror = e =>{ if(btn) btn.classList.remove('speaking');
                         const err=(e&&e.error)||'без названия';
                         if(err==='canceled'||err==='interrupted'){ this.note('отменено: начали новое слово'); return; }
-                        this.note('ОШИБКА: '+err); this.hint(); };
+                        this.note('ОШИБКА: '+err); };
       if(btn) btn.classList.add('speaking');
       S.speak(u);                              /* синхронно, прямо в обработчике нажатия */
       this.note('запрос: '+text+' · голос: '+(v? v.name+' / '+v.lang : 'системный'));
@@ -876,9 +862,8 @@ const speech = {
         if(started) return;
         if(btn) btn.classList.remove('speaking');
         this.note('НЕ ЗАЗВУЧАЛО за 2,5 с · speaking='+S.speaking+' pending='+S.pending+' paused='+S.paused);
-        this.hint();
       }, 2500);
-    }catch(e){ this.note('ИСКЛЮЧЕНИЕ: '+e.message); this.hint(); }
+    }catch(e){ this.note('ИСКЛЮЧЕНИЕ: '+e.message); }
   },
   beep(){
     try{
