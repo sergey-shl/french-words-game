@@ -369,7 +369,7 @@
     <div class="topbar"><button class="back" id="back-activity">← Назад</button></div>
     <h1 class="page-title" id="words-title"></h1>
     <div id="wordlist"></div>
-    <p class="audio-note" id="audio-note">Нажмите на значок звука, чтобы услышать произношение.</p>
+    <p class="audio-note" id="audio-note">Нажмите на значок звука, чтобы услышать произношение. Если звука нет, проверьте, что на телефоне выключен беззвучный режим.</p>
     <button class="btn" id="start-game">Начать игру</button>
   </section>
 
@@ -701,14 +701,22 @@ const RAW = {
     ['arrêter','останавливать'],['une voile','парус'],['une vague','волна'],
     ["s'empiler",'скапливаться / нагромождаться'],['jamais','никогда'],['partout','везде'],
     ['se dérouler','разворачиваться / проходить'],['le repos','отдых'],['une étape','этап'],
-    ['ne … que','только'],['seulement','только'],['la course cycliste','велосипедная гонка'],
+    ['ne … que','только (оборот: ne … que)'],['seulement','только / лишь'],['la course cycliste','велосипедная гонка'],
     ['un maillot','майка / футболка (спортивная)'],['entièrement','полностью / целиком'],
     ["l'aventure",'приключение'],['participer','участвовать'],['une paire de baskets','пара кроссовок'],
     ['un survêtement','спортивный костюм'],['le moyen','способ'],['la vie','жизнь'],['la capacité','способность'],
     ['occuper','занимать'],['se détendre','отдыхать / расслабляться'],['nécessaire','необходимый'],
     ['la santé','здоровье'],['la distraction','развлечение'],['être de bonne humeur','быть в хорошем настроении'],
     ['agréable','приятный'],['offrir','дарить'],['sans','без'],['le courage','смелость'],
-    ["l'adresse",'ловкость'],['la force','сила'],['la vitesse','скорость'],['développer','развивать']
+    ["l'adresse",'ловкость'],['la force','сила'],['la vitesse','скорость'],['développer','развивать'],
+    ['célèbre','знаменитый / известный'],["l'explication",'объяснение'],['expliquer','объяснять'],
+    ['formidable','потрясающий / замечательный'],['habillé','одетый'],["s'habiller",'одеваться'],
+    ['le peintre','художник (живописец)'],['poli','вежливый'],['la politesse','вежливость'],
+    ['le rang','ряд'],['ranger','убирать / складывать'],['la réflexion','размышление'],
+    ['remarquer','замечать'],['la remarque','замечание'],['renverser','опрокидывать'],
+    ['représenter','представлять (играть в театре)'],['sévère','строгий / суровый'],
+    ['le siècle','век'],['le spectateur','зритель'],['le spectacle','спектакль / представление'],
+    ['la mort','смерть'],['perdre','терять'],['trouver','находить']
   ]},
   idiomes:{ fr:'Avoir et être', ru:'Идиомы', words:[
     ['avoir faim','быть голодным',"Si je n'ai pas mangé depuis deux jours, j'ai faim."],
@@ -778,7 +786,7 @@ function show(id){
 
 /* ----- озвучка ----- */
 const speech = {
-  supported:'speechSynthesis' in window, voice:null,
+  supported:'speechSynthesis' in window, voice:null, ready:false, _u:null, _t:null, _q:null,
   prefer:['amélie','amelie','audrey','aurélie','aurelie','marie','virginie','charlotte','léa','lea','google français','thomas'],
   pick(){
     if(!this.supported) return;
@@ -789,17 +797,51 @@ const speech = {
     }
     this.voice = fr.find(x=>x.lang==='fr-FR' && x.localService) || fr.find(x=>x.lang==='fr-FR') || fr[0] || null;
   },
-  say(text,btn){
-    if(!this.supported) return;
-    speechSynthesis.cancel();
+  /* первый тап по экрану «будит» синтез: iOS не даёт говорить без действия пользователя */
+  unlock(){
+    if(!this.supported || this.ready) return;
+    this.ready = true;
+    try{
+      speechSynthesis.resume();
+      const u=new SpeechSynthesisUtterance(' '); u.volume=0; u.lang='fr-FR';
+      speechSynthesis.speak(u);
+    }catch(e){}
+    if(!this.voice) this.pick();
+  },
+  emit(text,btn){
     const u=new SpeechSynthesisUtterance(text);
-    u.lang='fr-FR'; if(this.voice)u.voice=this.voice;
+    u.lang='fr-FR';
+    if(this.voice && this.voice.lang && this.voice.lang.toLowerCase().startsWith('fr')) u.voice=this.voice;
     u.rate=0.78; u.pitch=1.08;
+    this._u = u;                 /* держим ссылку: иначе Safari обрывает речь на середине */
     if(btn){ btn.classList.add('speaking'); u.onend=u.onerror=()=>btn.classList.remove('speaking'); }
-    speechSynthesis.speak(u);
+    try{ speechSynthesis.speak(u); }catch(e){}
+    clearTimeout(this._t);
+    this._t = setTimeout(()=>{ try{ if(speechSynthesis.paused) speechSynthesis.resume(); }catch(e){} }, 250);
+  },
+  say(text,btn){
+    if(!this.supported || !text) return;
+    this.ready = true;
+    if(!this.voice) this.pick();
+    try{
+      speechSynthesis.resume();  /* iOS иногда оставляет движок на паузе после блокировки экрана */
+      if(speechSynthesis.speaking || speechSynthesis.pending){
+        /* cancel() и speak() в один тик Safari глотает — даём движку перевести дух */
+        speechSynthesis.cancel();
+        clearTimeout(this._q);
+        this._q = setTimeout(()=>this.emit(text,btn), 70);
+        return;
+      }
+    }catch(e){}
+    this.emit(text,btn);
   }
 };
-if (speech.supported){ speech.pick(); speechSynthesis.onvoiceschanged=()=>speech.pick(); }
+if (speech.supported){
+  speech.pick();
+  speechSynthesis.onvoiceschanged=()=>speech.pick();
+  document.addEventListener('pointerdown', ()=>speech.unlock(), {once:true});
+  document.addEventListener('touchstart', ()=>speech.unlock(), {once:true, passive:true});
+}
 
 /* ----- нормализация слова для сетки поиска ----- */
 const ACCENTS = {'à':'a','â':'a','ä':'a','é':'e','è':'e','ê':'e','ë':'e','î':'i','ï':'i',
@@ -1456,7 +1498,8 @@ const PUZZLE = {
   enville:     ['a-dres-se','di-rec-tion','sor-tie','trot-toir','car-re-four'],
   nature:      ['na-tu-re','fo-rêt','mon-ta-gne','col-li-ne'],
   verbes:      ['ve-nir','pren-dre','sa-voir','pou-voir','par-ler','tra-vail-ler','re-gar-der'],
-  nouveaux:    ['ja-mais','par-tout','re-pos','a-ven-tu-re','cou-ra-ge','vi-tes-se','san-té']
+  nouveaux:    ['ja-mais','par-tout','re-pos','a-ven-tu-re','cou-ra-ge','vi-tes-se','san-té',
+                'ex-pli-ca-tion','po-li-tes-se','spec-ta-teur','spec-ta-cle','for-mi-da-ble','ren-ver-ser']
 };
 const PZ_MIN = 3;
 
