@@ -293,6 +293,7 @@
   .dbg-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
   .dbg-b{border:1px solid var(--hair);background:var(--surface);color:var(--bleu);border-radius:999px;
     padding:9px 14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;min-height:40px}
+  .dbg-tip{color:var(--encre-soft);font-size:13px;font-weight:600;margin:0 0 12px}
   .dbg-log{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:12px 14px;
     white-space:pre-wrap;word-break:break-word;font-size:12.5px;margin:0;color:var(--encre)}
 
@@ -805,6 +806,8 @@ function show(id){
   window.scrollTo({top:0});
 }
 
+const BEEP='data:audio/wav;base64,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';
+
 /* ----- озвучка -----
    Правила, которые здесь важны:
    1. speak() вызывается синхронно внутри обработчика нажатия — iOS не даёт
@@ -814,7 +817,7 @@ function show(id){
    4. Всё, что происходит, записывается в журнал: открыть страницу с #audio. */
 const speech = {
   supported:'speechSynthesis' in window,
-  voice:null, warned:false, panel:null, log:[], _u:null, _w:null, _btn:null,
+  voice:null, warned:false, panel:null, log:[], _u:null, _w:null, _btn:null, _vkey:null,
   prefer:['audrey','aurélie','aurelie','amélie','amelie','marie','virginie','charlotte','léa','lea','google français','thomas'],
   pick(){
     if(!this.supported) return;
@@ -857,9 +860,14 @@ const speech = {
       this._u = u;                             /* держим ссылку: Safari иначе обрывает речь */
       let started=false;
       u.onstart = ()=>{ started=true; this.note('зазвучало: '+text); };
-      u.onend   = ()=>{ if(btn) btn.classList.remove('speaking'); this.note('закончило: '+text); };
+      u.onend   = ()=>{ if(btn) btn.classList.remove('speaking');
+                        this.note(started ? 'закончило: '+text
+                                          : 'ЗАКОНЧИЛО, НЕ НАЧАВ ЗВУЧАТЬ — похоже, звук отключён');
+                        if(!started) this.hint(); };
       u.onerror = e =>{ if(btn) btn.classList.remove('speaking');
-                        this.note('ОШИБКА: '+((e&&e.error)||'без названия')); this.hint(); };
+                        const err=(e&&e.error)||'без названия';
+                        if(err==='canceled'||err==='interrupted'){ this.note('отменено: начали новое слово'); return; }
+                        this.note('ОШИБКА: '+err); this.hint(); };
       if(btn) btn.classList.add('speaking');
       S.speak(u);                              /* синхронно, прямо в обработчике нажатия */
       this.note('запрос: '+text+' · голос: '+(v? v.name+' / '+v.lang : 'системный'));
@@ -872,6 +880,24 @@ const speech = {
       }, 2500);
     }catch(e){ this.note('ИСКЛЮЧЕНИЕ: '+e.message); this.hint(); }
   },
+  beep(){
+    try{
+      const a=new Audio(BEEP); a.play()
+        .then(()=>this.note('гудок: запущен'))
+        .catch(e=>this.note('гудок: не запустился — '+e.message));
+    }catch(e){ this.note('гудок: исключение — '+e.message); }
+  },
+  buttons(){
+    const p=this.panel; if(!p) return;
+    const box=p.querySelector('.dbg-btns'); box.innerHTML='';
+    const add=(label,fn)=>{ const b=document.createElement('button'); b.type='button'; b.className='dbg-b';
+      b.textContent=label; b.addEventListener('click',fn); box.appendChild(b); };
+    add('гудок (проверка динамика)', ()=>this.beep());
+    add('системным голосом', ()=>this.say('Bonjour, je parle français',null,null));
+    if(this.voice) add('выбранным: '+this.voice.name, ()=>this.say('Bonjour, je parle français',null,this.voice));
+    (this.supported?speechSynthesis.getVoices():[]).filter(x=>x.lang&&x.lang.toLowerCase().startsWith('fr'))
+      .slice(0,12).forEach(v=>add(v.name+' · '+v.lang, ()=>this.say('Bonjour, je parle français',null,v)));
+  },
   render(){
     const p=this.panel; if(!p) return;
     const vs = this.supported ? speechSynthesis.getVoices() : [];
@@ -883,22 +909,20 @@ const speech = {
       'выбран: <b>'+(this.voice? this.voice.name+' / '+this.voice.lang+(this.voice.localService?' (в системе)':' (из сети)') : 'нет')+'</b><br>'+
       'состояние: speaking='+S.speaking+' pending='+S.pending+' paused='+S.paused+'<br>'+
       '<span class="dbg-ua">'+navigator.userAgent+'</span>';
+    const vkey = (this.voice?this.voice.name:'-')+'|'+fr.map(x=>x.name).join(',');
+    if(this._vkey !== vkey){ this._vkey = vkey; this.buttons(); }  /* голоса приходят не сразу */
     p.querySelector('.dbg-log').textContent = this.log.length ? this.log.join('\n') : 'пока ничего не нажимали';
   },
   openPanel(){
     if(this.panel) return;
     const p=document.createElement('div'); p.className='dbg';
     p.innerHTML='<div class="dbg-head">Проверка озвучки<button class="dbg-x" type="button" aria-label="Закрыть">✕</button></div>'+
-                '<div class="dbg-info"></div><div class="dbg-btns"></div><pre class="dbg-log"></pre>';
+                '<div class="dbg-info"></div><div class="dbg-btns"></div>'+
+                '<p class="dbg-tip">Слышно гудок, но не речь — дело в синтезе речи. Не слышно ничего — громкость или беззвучный режим телефона.</p>'+
+                '<pre class="dbg-log"></pre>';
     document.body.appendChild(p); this.panel=p;
-    p.querySelector('.dbg-x').addEventListener('click',()=>{ p.remove(); this.panel=null; });
-    const box=p.querySelector('.dbg-btns');
-    const add=(label,v)=>{ const b=document.createElement('button'); b.type='button'; b.className='dbg-b';
-      b.textContent=label; b.addEventListener('click',()=>this.say('Bonjour, je parle français',null,v)); box.appendChild(b); };
-    add('системным голосом', null);
-    if(this.voice) add('выбранным: '+this.voice.name, this.voice);
-    (this.supported?speechSynthesis.getVoices():[]).filter(x=>x.lang&&x.lang.toLowerCase().startsWith('fr'))
-      .slice(0,12).forEach(v=>add(v.name+' · '+v.lang, v));
+    p.querySelector('.dbg-x').addEventListener('click',()=>{ p.remove(); this.panel=null; this._vkey=null; });
+    this._vkey=null;
     this.render();
   }
 };
