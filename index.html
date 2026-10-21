@@ -282,6 +282,20 @@
     opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
   .sp-toast.on{opacity:1;transform:none}
 
+  /* ---------- панель проверки озвучки (страница с #audio) ---------- */
+  .dbg{position:fixed;inset:0;z-index:100;background:var(--creme);overflow:auto;
+    padding:16px 16px calc(24px + env(safe-area-inset-bottom));font-size:14px;line-height:1.45}
+  .dbg-head{display:flex;align-items:center;justify-content:space-between;
+    font-family:'Alegreya',serif;font-weight:800;font-size:22px;color:var(--bleu);margin-bottom:12px}
+  .dbg-x{border:none;background:none;font-size:22px;line-height:1;color:var(--encre-soft);cursor:pointer;padding:4px 8px}
+  .dbg-info{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:12px 14px;margin-bottom:12px;word-break:break-word}
+  .dbg-ua{color:var(--encre-soft);font-size:12px}
+  .dbg-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .dbg-b{border:1px solid var(--hair);background:var(--surface);color:var(--bleu);border-radius:999px;
+    padding:9px 14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;min-height:40px}
+  .dbg-log{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:12px 14px;
+    white-space:pre-wrap;word-break:break-word;font-size:12.5px;margin:0;color:var(--encre)}
+
   /* ====================== ПАЗЛ ====================== */
   .pz-prompt{text-align:center;margin:14px 0 4px}
   .pz-label{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--encre-soft)}
@@ -376,7 +390,7 @@
     <div class="topbar"><button class="back" id="back-activity">← Назад</button></div>
     <h1 class="page-title" id="words-title"></h1>
     <div id="wordlist"></div>
-    <p class="audio-note" id="audio-note">Нажмите на значок звука, чтобы услышать произношение. На iPhone озвучка работает только в Safari. Если звука нет, проверьте беззвучный режим.</p>
+    <p class="audio-note" id="audio-note">Нажмите на значок звука, чтобы услышать произношение. Если звука нет, проверьте громкость и беззвучный режим; на iPhone откройте сайт в Safari.</p>
     <button class="btn" id="start-game">Начать игру</button>
   </section>
 
@@ -791,87 +805,110 @@ function show(id){
   window.scrollTo({top:0});
 }
 
-/* ----- озвучка ----- */
+/* ----- озвучка -----
+   Правила, которые здесь важны:
+   1. speak() вызывается синхронно внутри обработчика нажатия — iOS не даёт
+      запускать речь из setTimeout и прочих отложенных вызовов.
+   2. Никаких «разогревочных» пустых фраз: они занимают очередь и мешают.
+   3. Голос никогда не подменяется автоматически — иначе слово звучит с чужим акцентом.
+   4. Всё, что происходит, записывается в журнал: открыть страницу с #audio. */
 const speech = {
-  supported:'speechSynthesis' in window, voice:null, ready:false, warned:false,
-  bad:new Set(), _u:null, _t:null, _q:null, _f:null,
-  prefer:['amélie','amelie','audrey','aurélie','aurelie','marie','virginie','charlotte','léa','lea','google français','thomas'],
+  supported:'speechSynthesis' in window,
+  voice:null, warned:false, panel:null, log:[], _u:null, _w:null, _btn:null,
+  prefer:['audrey','aurélie','aurelie','amélie','amelie','marie','virginie','charlotte','léa','lea','google français','thomas'],
   pick(){
     if(!this.supported) return;
     const all = speechSynthesis.getVoices().filter(x=>x.lang && x.lang.toLowerCase().startsWith('fr'));
-    const ok = x => !this.bad.has(x.name);
-    const ff = all.filter(x=>x.lang.toLowerCase()==='fr-fr');
-    const pool = ff.length ? ff : all;   /* французский из Франции важнее канадского */
+    const ff  = all.filter(x=>x.lang.toLowerCase()==='fr-fr');
+    const pool = ff.length ? ff : all;          /* французский из Франции важнее канадского */
     for(const name of this.prefer){
-      const f = pool.find(x=>x.name.toLowerCase().includes(name) && ok(x));
+      const f = pool.find(x=>x.name.toLowerCase().includes(name));
       if(f){ this.voice=f; return; }
     }
-    this.voice = pool.find(x=>x.localService && ok(x)) || pool.find(ok) || null;
+    this.voice = pool.find(x=>x.localService) || pool[0] || null;
   },
-  /* сообщение, когда браузер синтез речи не воспроизводит (Chrome и Firefox на iPhone) */
-  warn(){
+  note(ev){
+    this.log.push(new Date().toLocaleTimeString('ru-RU')+'  '+ev);
+    if(this.log.length>30) this.log.shift();
+    if(this.panel) this.render();
+  },
+  hint(){
     if(this.warned) return;
     this.warned = true;
     const d=document.createElement('div'); d.className='sp-toast';
-    d.textContent='Озвучка не работает в этом браузере. Откройте сайт в Safari.';
+    d.textContent='Звук не запустился. Проверьте громкость и беззвучный режим; на iPhone откройте сайт в Safari.';
     document.body.appendChild(d);
     setTimeout(()=>d.classList.add('on'),20);
     setTimeout(()=>{ d.classList.remove('on'); setTimeout(()=>d.remove(),300); },7000);
   },
-  /* первый тап по экрану «будит» синтез: iOS не даёт говорить без действия пользователя */
-  unlock(){
-    if(!this.supported || this.ready) return;
-    this.ready = true;
-    try{
-      speechSynthesis.resume();
-      const u=new SpeechSynthesisUtterance(' '); u.volume=0; u.lang='fr-FR';
-      speechSynthesis.speak(u);
-    }catch(e){}
-    if(!this.voice) this.pick();
-  },
-  emit(text,btn,retry){
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='fr-FR';
-    if(!retry && this.voice && this.voice.lang && this.voice.lang.toLowerCase().startsWith('fr')) u.voice=this.voice;
-    u.rate=0.78; u.pitch=1.08;
-    this._u = u;                 /* держим ссылку: иначе Safari обрывает речь на середине */
-    let started=false; u.onstart=()=>{ started=true; };
-    if(btn){ btn.classList.add('speaking'); u.onend=u.onerror=()=>btn.classList.remove('speaking'); }
-    try{ speechSynthesis.speak(u); }catch(e){}
-    clearTimeout(this._t);
-    this._t = setTimeout(()=>{ try{ if(speechSynthesis.paused) speechSynthesis.resume(); }catch(e){} }, 250);
-    clearTimeout(this._f);
-    this._f = setTimeout(()=>{
-      if(started || speechSynthesis.speaking || speechSynthesis.pending) return;
-      if(retry){ if(btn) btn.classList.remove('speaking'); this.warn(); return; }
-      /* голос выбран, но молчит: обычно он не скачан в системе — пробуем голос по умолчанию */
-      if(this.voice){ this.bad.add(this.voice.name); this.voice=null; this.pick(); }
-      this.emit(text,btn,true);
-    }, retry ? 700 : 450);
-  },
-  say(text,btn){
+  say(text,btn,voice){
     if(!this.supported || !text) return;
-    this.ready = true;
-    if(!this.voice) this.pick();
+    const S = speechSynthesis;
     try{
-      speechSynthesis.resume();  /* iOS иногда оставляет движок на паузе после блокировки экрана */
-      if(speechSynthesis.speaking || speechSynthesis.pending){
-        /* cancel() и speak() в один тик Safari глотает — даём движку перевести дух */
-        speechSynthesis.cancel();
-        clearTimeout(this._q);
-        this._q = setTimeout(()=>this.emit(text,btn), 70);
-        return;
-      }
-    }catch(e){}
-    this.emit(text,btn);
+      if(S.paused) S.resume();                 /* движок мог уснуть после блокировки экрана */
+      if(S.speaking || S.pending) S.cancel();  /* снимаем предыдущее слово */
+      /* гасим подсветку прошлой кнопки: при отмене её onend может не прийти */
+      if(this._btn) this._btn.classList.remove('speaking');
+      this._btn = btn || null;
+      if(!this.voice) this.pick();
+      const v = (voice===undefined) ? this.voice : voice;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang='fr-FR'; if(v) u.voice=v; u.rate=0.78; u.pitch=1.08;
+      this._u = u;                             /* держим ссылку: Safari иначе обрывает речь */
+      let started=false;
+      u.onstart = ()=>{ started=true; this.note('зазвучало: '+text); };
+      u.onend   = ()=>{ if(btn) btn.classList.remove('speaking'); this.note('закончило: '+text); };
+      u.onerror = e =>{ if(btn) btn.classList.remove('speaking');
+                        this.note('ОШИБКА: '+((e&&e.error)||'без названия')); this.hint(); };
+      if(btn) btn.classList.add('speaking');
+      S.speak(u);                              /* синхронно, прямо в обработчике нажатия */
+      this.note('запрос: '+text+' · голос: '+(v? v.name+' / '+v.lang : 'системный'));
+      clearTimeout(this._w);
+      this._w = setTimeout(()=>{
+        if(started) return;
+        if(btn) btn.classList.remove('speaking');
+        this.note('НЕ ЗАЗВУЧАЛО за 2,5 с · speaking='+S.speaking+' pending='+S.pending+' paused='+S.paused);
+        this.hint();
+      }, 2500);
+    }catch(e){ this.note('ИСКЛЮЧЕНИЕ: '+e.message); this.hint(); }
+  },
+  render(){
+    const p=this.panel; if(!p) return;
+    const vs = this.supported ? speechSynthesis.getVoices() : [];
+    const fr = vs.filter(x=>x.lang && x.lang.toLowerCase().startsWith('fr'));
+    const S = this.supported ? speechSynthesis : {};
+    p.querySelector('.dbg-info').innerHTML =
+      'синтез речи: <b>'+(this.supported?'есть':'НЕТ')+'</b><br>'+
+      'голосов всего: <b>'+vs.length+'</b>, французских: <b>'+fr.length+'</b><br>'+
+      'выбран: <b>'+(this.voice? this.voice.name+' / '+this.voice.lang+(this.voice.localService?' (в системе)':' (из сети)') : 'нет')+'</b><br>'+
+      'состояние: speaking='+S.speaking+' pending='+S.pending+' paused='+S.paused+'<br>'+
+      '<span class="dbg-ua">'+navigator.userAgent+'</span>';
+    p.querySelector('.dbg-log').textContent = this.log.length ? this.log.join('\n') : 'пока ничего не нажимали';
+  },
+  openPanel(){
+    if(this.panel) return;
+    const p=document.createElement('div'); p.className='dbg';
+    p.innerHTML='<div class="dbg-head">Проверка озвучки<button class="dbg-x" type="button" aria-label="Закрыть">✕</button></div>'+
+                '<div class="dbg-info"></div><div class="dbg-btns"></div><pre class="dbg-log"></pre>';
+    document.body.appendChild(p); this.panel=p;
+    p.querySelector('.dbg-x').addEventListener('click',()=>{ p.remove(); this.panel=null; });
+    const box=p.querySelector('.dbg-btns');
+    const add=(label,v)=>{ const b=document.createElement('button'); b.type='button'; b.className='dbg-b';
+      b.textContent=label; b.addEventListener('click',()=>this.say('Bonjour, je parle français',null,v)); box.appendChild(b); };
+    add('системным голосом', null);
+    if(this.voice) add('выбранным: '+this.voice.name, this.voice);
+    (this.supported?speechSynthesis.getVoices():[]).filter(x=>x.lang&&x.lang.toLowerCase().startsWith('fr'))
+      .slice(0,12).forEach(v=>add(v.name+' · '+v.lang, v));
+    this.render();
   }
 };
 if (speech.supported){
+  try{ speechSynthesis.cancel(); }catch(e){}   /* чистим очередь, оставшуюся от прошлой страницы */
   speech.pick();
-  speechSynthesis.onvoiceschanged=()=>speech.pick();
-  document.addEventListener('pointerdown', ()=>speech.unlock(), {once:true});
-  document.addEventListener('touchstart', ()=>speech.unlock(), {once:true, passive:true});
+  speechSynthesis.onvoiceschanged = ()=>{ speech.pick(); if(speech.panel) speech.render(); };
 }
+function audioCheck(){ if(location.hash==='#audio' && speech.supported) speech.openPanel(); }
+window.addEventListener('hashchange', audioCheck);
 
 /* ----- нормализация слова для сетки поиска ----- */
 const ACCENTS = {'à':'a','â':'a','ä':'a','é':'e','è':'e','ê':'e','ë':'e','î':'i','ï':'i',
@@ -1663,6 +1700,7 @@ window.__PZ = { PUZZLE, pzItems, startPuzzle, pzTap, pzReturn, pzNext, get state
 
 
 renderHome();
+audioCheck();
 </script>
 </body>
 </html>
